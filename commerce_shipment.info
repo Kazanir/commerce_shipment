@@ -2,3 +2,13 @@ name = Commerce Shipment
 description = Provides a solution for managing multiple shipments per order.
 package = Commerce (contrib)
 core = 7.x
+
+dependencies[] = commerce
+dependencies[] = entity
+dependencies[] = entityreference
+
+; Entity includes
+files[] = includes/commerce_shipment.controller.inc
+
+; IEF includes
+files[] = includes/commerce_shipment.inline_entity_form.inc

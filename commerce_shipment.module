@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ * Provides an entity to manage multiple shipments per order.
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function commerce_shipment_entity_info() {
+  $return = array();
+
+  $return['commerce_shipment'] = array(
+    'label' => t('Commerce Shipment'),
+    'entity class' => 'Entity',
+    'controller class' => 'CommerceShipmentEntityController',
+    'base table' => 'commerce_shipment',
+    'fieldable' => TRUE,
+    'uuid' => TRUE,
+    'entity keys' => array(
+      'id' => 'shipment_id',
+      'bundle' => 'type',
+      'label' => 'shipment_id',
+      'uuid' => 'uuid',
+    ),
+    'bundle keys' => array(
+      'bundle' => 'type',
+    ),
+    'load hook' => 'commerce_shipment_load',
+    'view modes' => array(
+      'admin' => array(
+        'label' => t('Admin'),
+        'custom settings' => FALSE,
+      ),
+      'full' => array(
+        'label' => t('Full'),
+        'custom settings' => FALSE,
+      ),
+      'referenced' => array(
+        'label' => t('Referenced'),
+        'custom settings' => FALSE,
+      ),
+    ),
+    'access callback' => 'commerce_entity_access',
+    'access arguments' => array(
+      'access tag' => 'commerce_shipment_access',
+    ),
+    'token type' => 'commerce-shipment',
+    'metadata controller class' => '',
+    'permission labels' => array(
+      'singular' => t('shipment'),
+      'plural' => t('shipments'),
+    ),
+    // Prevent Redirect alteration of the shipment form.
+    'redirect' => FALSE,
+  );
+
+  // Inline entity form integration
+  if (module_exists('inline_entity_form')) {
+    $return['commerce_shipment']['inline entity form'] = array(
+      'controller' => 'CommerceShipmentInlineEntityFormController',
+    );
+    $return['commerce_shipment']['view modes']['admin_ief'] = array(
+      'label' => t('Admin: Inline Entity Form'),
+      'custom settings' => FALSE,
+    );
+  }
+
+  // Type setup
+  foreach (commerce_shipment_type_get_name() as $type => $name) {
+    $return['commerce_shipment']['bundles'][$type] = array(
+      'label' => $name,
+      'admin' => array(
+        'path' => 'admin/commerce/config/shipment/' . commerce_shipment_type_to_arg($type),
+        'access arguments' => array('administer shipment types'),
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function commerce_shipment_permission() {
+  $permissions = array(
+    'administer shipment types' => array(
+      'title' => t('Administer shipment types'),
+      'description' => t('Allows users to configure shipment types and their fields.'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  $permissions += commerce_entity_access_permissions('commerce_shipment');
+
+  return $permissions;
+}
+
+/**
+ * Returns a path argument from a shipment type.
+ */
+function commerce_shipment_type_to_arg($type) {
+  return strtr($type, '_', '-');
+}
+
+/**
+ * Loads shipment by ID.
+ *
+ * @param $shipment_id
+ *   The local ID of the shipment to load.
+ *
+ * @return
+ *   A loaded entity object or FALSE if the specified id does not exist
+ */
+function commerce_shipment_load($shipment_id) {
+  return entity_load_single('commerce_shipment', $shipment_id);
+}
+
+/**
+ * Returns the human readable name of any or all shipment types.
+ *
+ * @param $type
+ *   Optional parameter specifying the type whose name to return.
+ *
+ * @return
+ *   Either an array of all shipment type names keyed by the machine name
+ *   or a string containing the human readable name for the specified type. If a
+ *   type is specified that does not exist, this function returns FALSE.
+ */
+function commerce_shipment_type_get_name($type = NULL) {
+  $shipment_types = commerce_shipment_types();
+
+  // Return a type name if specified and it exists.
+  if (!empty($type)) {
+    if (isset($shipment_types[$type])) {
+      return $shipment_types[$type]['name'];
+    }
+    else {
+      // Return FALSE if it does not exist.
+      return FALSE;
+    }
+  }
+
+  // Otherwise turn the array values into the type name only.
+  foreach ($shipment_types as $key => $value) {
+    $shipment_types[$key] = $value['name'];
+  }
+
+  return $shipment_types;
+}
+
+/**
+ * Returns an array of shipment bundle type arrays keyed by type.
+ */
+function commerce_shipment_types() {
+  // First check the static cache for a types array.
+  $shipment_types = &drupal_static(__FUNCTION__);
+
+  // If it did not exist, fetch the types now.
+  if (!isset($shipment_types)) {
+    $shipment_types = array();
+
+    // Find shipment types defined by hook_commerce_shipment_type_info().
+    foreach (module_implements('commerce_shipment_type_info') as $module) {
+      foreach (module_invoke($module, 'commerce_shipment_type_info') as $type => $type_details) {
+        // Set the module each item type is defined
+        $type_details += array(
+          'module' => $module,
+        );
+        $shipment_types[$type] = $type_details;
+      }
+    }
+
+    // Last allow the info to be altered by other modules.
+    drupal_alter('commerce_shipment_type_info', $shipment_types);
+  }
+
+  return $shipment_types;
+}
+
+/**
+ * Implements hook_commerce_shipment_type_info().
+ *
+ * Define the default bundle.
+ */
+function commerce_shipment_commerce_shipment_type_info() {
+  $shipment_types = array();
+
+  $shipment_types['shipment'] = array(
+    'type' => 'shipment',
+    'name' => t('Shipment'),
+    'description' => t('The default shipment type.'),
+  );
+
+  return $shipment_types;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function commerce_shipment_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_shipment') . '/includes/views',
+  );
+}
