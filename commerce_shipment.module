@@ -72,11 +72,47 @@ function commerce_shipment_entity_info() {
     $return['commerce_shipment']['bundles'][$type] = array(
       'label' => $name,
       'admin' => array(
-        'path' => 'admin/commerce/config/shipment/' . commerce_shipment_type_to_arg($type),
+        'path' => 'admin/commerce/config/shipments/' . commerce_shipment_type_to_arg($type),
         'access arguments' => array('administer shipment types'),
       ),
     );
   }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_shipment_menu() {
+  $items = array();
+
+  $items['admin/commerce/config/shipments'] = array(
+    'title' => 'Shipment types',
+    'description' => 'Manage shipment types for your store.',
+    'page callback' => 'commerce_shipment_types_overview',
+    'access arguments' => array('administer shipment types'),
+    'file' => 'includes/commerce_shipment.types.inc',
+  );
+
+  foreach (commerce_shipment_types() as $type => $shipment_type) {
+    // Convert underscores to hyphens for the menu item argument.
+    $type_arg = commerce_shipment_type_to_arg($type);
+
+    $items['admin/commerce/config/shipments/' . $type_arg] = array(
+      'title' => $shipment_type['name'],
+      'page callback' => 'commerce_shipment_type_page_redirect',
+      'page arguments' => array($type_arg),
+      'access arguments' => array('administer shipment types'),
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * Redirects a shipment type URL to its fields management page.
+ */
+function commerce_shipment_type_page_redirect($type) {
+  drupal_goto('admin/commerce/config/shipments/' . $type . '/fields');
 }
 
 /**
