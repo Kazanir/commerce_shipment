@@ -1,0 +1,4 @@
+name = Commerce Shipment
+description = Provides a solution for managing multiple shipments per order.
+package = Commerce (contrib)
+core = 7.x
