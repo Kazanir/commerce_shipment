@@ -6,7 +6,7 @@
 
 
 /**
- * Menu callback: display an overview of available bundle item types.
+ * Menu callback: display an overview of available shipment types.
  */
 function commerce_shipment_types_overview() {
   drupal_add_css(drupal_get_path('module', 'commerce_shipment') . '/theme/commerce_shipment.admin.css');
@@ -18,12 +18,12 @@ function commerce_shipment_types_overview() {
 
   $rows = array();
 
-  // Loop through all defined bundle item types.
+  // Loop through all defined shipment types.
   foreach (commerce_shipment_types() as $type => $shipment_type) {
     // Build the operation links for the current shipment type.
     $links = menu_contextual_links('commerce-shipment-type', 'admin/commerce/config/shipments', array(commerce_shipment_type_to_arg($type)));
 
-    // Add the item type's row to the table's rows array.
+    // Add the shipment type's row to the table's rows array.
     $type_markup = check_plain($shipment_type['name']);
     $type_markup .= ' <small>' . t('(Machine name: @type)', array('@type' => $shipment_type['type'])) . '</small>';
     $type_markup .= '<div class="description">' . filter_xss_admin($shipment_type['description']) . '</div>';

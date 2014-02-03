@@ -73,10 +73,12 @@ function commerce_shipment_entity_info() {
       'label' => $name,
       'admin' => array(
         'path' => 'admin/commerce/config/shipments/' . commerce_shipment_type_to_arg($type),
-        'access arguments' => array('administer shipment types'),
+        'access arguments' => array('administer commerce_shipment types'),
       ),
     );
   }
+
+  return $return;
 }
 
 /**
@@ -89,7 +91,7 @@ function commerce_shipment_menu() {
     'title' => 'Shipment types',
     'description' => 'Manage shipment types for your store.',
     'page callback' => 'commerce_shipment_types_overview',
-    'access arguments' => array('administer shipment types'),
+    'access arguments' => array('administer commerce_shipment types'),
     'file' => 'includes/commerce_shipment.types.inc',
   );
 
@@ -101,11 +103,26 @@ function commerce_shipment_menu() {
       'title' => $shipment_type['name'],
       'page callback' => 'commerce_shipment_type_page_redirect',
       'page arguments' => array($type_arg),
-      'access arguments' => array('administer shipment types'),
+      'access arguments' => array('administer commerce_shipment types'),
     );
   }
 
   return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function commerce_shipment_menu_alter(&$items) {
+  // Transform the field UI tabs into contextual links.
+  foreach (commerce_shipment_types() as $type => $shipment_type) {
+    // Convert underscores to hyphens for the menu item argument.
+    $type_arg = commerce_shipment_type_to_arg($type);
+    if (isset($items['admin/commerce/config/shipments/' . $type_arg . '/fields'])) {
+      $items['admin/commerce/config/shipments/' . $type_arg . '/fields']['context'] = MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE;
+      $items['admin/commerce/config/shipments/' . $type_arg . '/display']['context'] = MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE;
+    }
+  }
 }
 
 /**
@@ -120,7 +137,7 @@ function commerce_shipment_type_page_redirect($type) {
  */
 function commerce_shipment_permission() {
   $permissions = array(
-    'administer shipment types' => array(
+    'administer commerce_shipment types' => array(
       'title' => t('Administer shipment types'),
       'description' => t('Allows users to configure shipment types and their fields.'),
       'restrict access' => TRUE,
@@ -199,7 +216,7 @@ function commerce_shipment_types() {
     // Find shipment types defined by hook_commerce_shipment_type_info().
     foreach (module_implements('commerce_shipment_type_info') as $module) {
       foreach (module_invoke($module, 'commerce_shipment_type_info') as $type => $type_details) {
-        // Set the module each item type is defined
+        // Set the module each shipment type is defined in.
         $type_details += array(
           'module' => $module,
         );
