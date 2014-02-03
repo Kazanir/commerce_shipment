@@ -203,6 +203,13 @@ function commerce_shipment_type_get_name($type = NULL) {
 }
 
 /**
+ * Wraps commerce_shipment_type_get_name() for the Entity module.
+ */
+function commerce_shipment_type_options_list() {
+  return commerce_shipment_type_get_name();
+}
+
+/**
  * Returns an array of shipment bundle type arrays keyed by type.
  */
 function commerce_shipment_types() {
