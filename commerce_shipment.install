@@ -5,6 +5,60 @@
  */
 
 /**
+ * Implements hook_schema().
+ */
+function commerce_shipment_schema() {
+  $schema = array();
+
+  $schema['commerce_shipment'] = array(
+    'description' => 'The base table for shipment entities.',
+    'fields' => array(
+      'shipment_id' => array(
+        'description' => 'The primary identifier for a shipment entity.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The module defined type of this shipment entity.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'status' => array(
+        'description' => 'Boolean indicating whether or not the shipment is active.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the shipment was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the shipment was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('shipment_id'),
+    'indexes' => array(
+      'shipment_type' => array('type'),
+    ),
+  );
+  if (module_exists('uuid')) {
+    $schema['commerce_shipment']['fields']['uuid'] = uuid_schema_field_definition();
+  }
+
+  return $schema;
+}
+
+/**
  * Field config and instance definitions.
  *
  * @return array
