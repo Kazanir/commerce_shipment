@@ -167,10 +167,11 @@ function commerce_shipment_install_fields() {
  * Implements hook_uninstall().
  */
 function commerce_shipment_uninstall() {
-  // Delete all field instances this module creates.
   $fields = commerce_shipment_installed_fields();
-  foreach ($fields['field_instance'] as $field_instance) {
-    $instance = field_info_instance($field_instance['entity_type'], $field_instance['field_name'], $field_instance['bundle']);
-    field_delete_instance($instance);
+  // Delete all fields, their instances, and data, this module creates.
+  foreach ($fields['field_base'] as $field_base) {
+    field_delete_field($field_base['field_name']);
   }
+
+  field_purge_batch(1000);
 }
