@@ -12,7 +12,7 @@ function commerce_shipment_entity_property_info() {
   $info = array();
 
   // Add meta-data about the basic properties.
-  $properties = &$info['commerce_bundle_item']['properties'];
+  $properties = &$info['commerce_shipment']['properties'];
 
   $properties['shipment_id'] = array(
     'label' => t('Shipment ID'),
@@ -46,6 +46,16 @@ function commerce_shipment_entity_property_info() {
     'query callback' => 'entity_metadata_table_query',
     'setter permission' => 'administer commerce_shipment entities',
     'schema field' => 'changed',
+  );
+  // Payment transaction reference.
+  $properties['transaction'] = array(
+    'label' => t("Shipment Payment Transaction"),
+    'type' => 'commerce_payment_transaction',
+    'description' => t("The payment transaction used for this shipment."),
+    'setter callback' => 'entity_property_verbatim_set',
+    'setter permission' => 'administer commerce_shipment entities',
+    'required' => TRUE,
+    'schema field' => 'transaction_id',
   );
 
   return $info;
