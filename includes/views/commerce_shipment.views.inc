@@ -39,5 +39,24 @@ function commerce_shipment_views_data() {
     ),
   );
 
+  // Expose the shipment type.
+  $data['commerce_shipment']['type'] = array(
+    'title' => t('Type'),
+    'help' => t('The human-readable name of the type of the shipment.'),
+    'field' => array(
+      'handler' => 'commerce_shipment_handler_field_shipment_type',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'commerce_shipment_handler_filter_shipment_type',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
+    ),
+  );
+
   return $data;
 }
