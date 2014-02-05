@@ -20,4 +20,5 @@ function commerce_shipment_views_data() {
   );
   $data['commerce_shipment']['table']['entity type'] = 'commerce_shipment';
 
+  return $data;
 }

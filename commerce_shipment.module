@@ -10,6 +10,7 @@
  */
 function commerce_shipment_entity_info() {
   $return = array();
+  $module_path = drupal_get_path('module', 'commerce_shipment');
 
   $return['commerce_shipment'] = array(
     'label' => t('Commerce Shipment'),
@@ -54,6 +55,15 @@ function commerce_shipment_entity_info() {
     ),
     // Prevent Redirect alteration of the shipment form.
     'redirect' => FALSE,
+    'admin ui' => array(
+      // Path to the base entity object management page, but doesn't actually
+      // create a menu item, it merely is used as the parent for entity CRUD
+      // paths, e.g. admin/commerce/order%commerce_order/shipments/add.
+      'path' => 'admin/commerce/orders/%commerce_order/shipments',
+      // Provides the form callback for creating/editing entity objects.
+      'file' => 'commerce_shipment.forms.inc',
+      'file path' => $module_path . '/includes',
+    ),
   );
 
   // Inline entity form integration
@@ -87,6 +97,7 @@ function commerce_shipment_entity_info() {
 function commerce_shipment_menu() {
   $items = array();
 
+  // Path to manage shipment bundles
   $items['admin/commerce/config/shipments'] = array(
     'title' => 'Shipment types',
     'description' => 'Manage shipment types for your store.',
@@ -94,7 +105,6 @@ function commerce_shipment_menu() {
     'access arguments' => array('administer commerce_shipment types'),
     'file' => 'includes/commerce_shipment.types.inc',
   );
-
   foreach (commerce_shipment_types() as $type => $shipment_type) {
     // Convert underscores to hyphens for the menu item argument.
     $type_arg = commerce_shipment_type_to_arg($type);
