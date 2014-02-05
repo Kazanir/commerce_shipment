@@ -57,7 +57,7 @@ function commerce_shipment_entity_property_info() {
     'schema field' => 'changed',
   );
   // Payment transaction reference.
-  $properties['transaction'] = array(
+  $properties['transaction_id'] = array(
     'label' => t("Shipment Payment Transaction"),
     'type' => 'commerce_payment_transaction',
     'description' => t("The payment transaction used for this shipment."),
