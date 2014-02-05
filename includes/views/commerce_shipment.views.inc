@@ -25,7 +25,7 @@ function commerce_shipment_views_data() {
     'title' => t('Shipment ID'),
     'help' => t('The unique internal identifier of the shipment.'),
     'field' => array(
-      'handler' => 'views_handler_field',
+      'handler' => 'commerce_shipment_handler_field_shipment',
       'click sortable' => TRUE,
     ),
     'filter' => array(

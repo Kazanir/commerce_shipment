@@ -20,6 +20,15 @@ function commerce_shipment_entity_property_info() {
     'type' => 'integer',
     'schema field' => 'shipment_id',
   );
+  $properties['order_id'] = array(
+    'label' => t('Order ID', array(), array('context' => 'a drupal commerce order')),
+    'type' => 'integer',
+    'description' => t('The unique ID of the order the shipment belongs to.'),
+    'setter callback' => 'entity_property_verbatim_set',
+    'setter permission' => 'administer commerce_shipment entities',
+    'clear' => array('order'),
+    'schema field' => 'order_id',
+  );
   $properties['type'] = array(
     'label' => t('Type'),
     'description' => t('The type of the shipment.'),

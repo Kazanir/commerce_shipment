@@ -12,3 +12,6 @@ files[] = includes/commerce_shipment.controller.inc
 
 ; IEF includes
 files[] = includes/commerce_shipment.inline_entity_form.inc
+
+; Views includes
+files[] = includes/views/handlers/commerce_shipment_handler_field_shipment.inc
