@@ -20,5 +20,24 @@ function commerce_shipment_views_data() {
   );
   $data['commerce_shipment']['table']['entity type'] = 'commerce_shipment';
 
+  // Expose the Shipment ID.
+  $data['commerce_shipment']['shipment_id'] = array(
+    'title' => t('Shipment ID'),
+    'help' => t('The unique internal identifier of the shipment.'),
+    'field' => array(
+      'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+    ),
+  );
+
   return $data;
 }
