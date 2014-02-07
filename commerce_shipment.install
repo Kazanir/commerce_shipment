@@ -259,6 +259,89 @@ function commerce_shipment_installed_fields() {
     ),
   );
 
+  // Commerce Order Shipments reference field base.
+  $fields['field_base']['commerce_shipments'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'commerce_shipments',
+    'foreign keys' => array(
+      'commerce_shipment' => array(
+        'columns' => array(
+          'target_id' => 'shipment_id',
+        ),
+        'table' => 'commerce_shipment',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 0,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'target_type' => 'commerce_shipment',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  // Commerce Order Shipments reference field instance.
+  $fields['field_instance']['commerce_shipments'] = array(
+    'bundle' => 'commerce_order',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => -4,
+      ),
+    ),
+    'entity_type' => 'commerce_order',
+    'field_name' => 'commerce_shipments',
+    'label' => 'Commerce Shipments',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'inline_entity_form',
+      'settings' => array(
+        'fields' => array(),
+        'type_settings' => array(
+          'allow_existing' => 0,
+          'delete_references' => 0,
+          'label_plural' => 'shipments',
+          'label_singular' => 'shipment',
+          'match_operator' => 'CONTAINS',
+          'override_labels' => 0,
+        ),
+      ),
+      'type' => 'inline_entity_form',
+      'weight' => -4,
+    ),
+  );
+
   return $fields;
 }
 
