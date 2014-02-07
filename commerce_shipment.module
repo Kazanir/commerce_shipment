@@ -10,7 +10,6 @@
  */
 function commerce_shipment_entity_info() {
   $return = array();
-  $module_path = drupal_get_path('module', 'commerce_shipment');
 
   $return['commerce_shipment'] = array(
     'label' => t('Commerce Shipment'),

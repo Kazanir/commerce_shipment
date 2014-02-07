@@ -17,3 +17,4 @@ files[] = includes/commerce_shipment.inline_entity_form.inc
 files[] = includes/views/handlers/commerce_shipment_handler_field_shipment.inc
 files[] = includes/views/handlers/commerce_shipment_handler_field_shipment_type.inc
 files[] = includes/views/handlers/commerce_shipment_handler_filter_shipment_type.inc
+files[] = includes/views/handlers/commerce_shipment_handler_area_add.inc
