@@ -58,5 +58,42 @@ function commerce_shipment_views_data() {
     ),
   );
 
+  // Expose the order ID.
+  $data['commerce_shipment']['order_id'] = array(
+    'title' => t('Order ID', array(), array('context' => 'a drupal commerce order')),
+    'help' => t('The unique internal identifier of the associated order.'),
+    'field' => array(
+      'handler' => 'commerce_order_handler_field_order',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'argument' => array(
+      'handler' => 'commerce_order_handler_argument_order_order_id',
+      'name field' => 'order_number',
+      'numeric' => TRUE,
+      'validate type' => 'order_id',
+    ),
+    'relationship' => array(
+      'handler' => 'views_handler_relationship',
+      'base' => 'commerce_order',
+      'field' => 'order_id',
+      'label' => t('Order', array(), array('context' => 'a drupal commerce order')),
+    ),
+  );
+
+  // Area handler that provides an 'Add Shipment' button.
+  $data['commerce_shipment']['area_add'] = array(
+    'title' => t('Add Shipment'),
+    'help' => t('Display a button for adding shipments to a specific order.'),
+    'area' => array(
+      'handler' => 'commerce_shipment_handler_area_add',
+    ),
+  );
+
   return $data;
 }

@@ -5,7 +5,6 @@
  * Forms for creating/editing and deleting shipment entities.
  */
 
-
 /**
  * Form callback: create or edit a shipment.
  *

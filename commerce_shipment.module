@@ -55,15 +55,6 @@ function commerce_shipment_entity_info() {
     ),
     // Prevent Redirect alteration of the shipment form.
     'redirect' => FALSE,
-    'admin ui' => array(
-      // Path to the base entity object management page, but doesn't actually
-      // create a menu item, it merely is used as the parent for entity CRUD
-      // paths, e.g. admin/commerce/order%commerce_order/shipments/add.
-      'path' => 'admin/commerce/orders/%commerce_order/shipments',
-      // Provides the form callback for creating/editing entity objects.
-      'file' => 'commerce_shipment.forms.inc',
-      'file path' => $module_path . '/includes',
-    ),
   );
 
   // Inline entity form integration
