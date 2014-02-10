@@ -78,7 +78,8 @@ function commerce_shipment_schema() {
 function commerce_shipment_installed_fields() {
   $fields = array();
 
-  // Commerce Shipment Tracking Number field base.
+  // Commerce Shipment Tracking Number field base. The shipment's tracking
+  // number as provided by the shipping provider.
   $fields['field_base']['commerce_shipment_tracking_num'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -141,7 +142,8 @@ function commerce_shipment_installed_fields() {
     ),
   );
 
-  // Commerce Shipment Status field base.
+  // Commerce Shipment Status field base. Used in determining whether or not to
+  // create a payment transaction for the shipment.
   $fields['field_base']['commerce_shipment_status'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -203,7 +205,8 @@ function commerce_shipment_installed_fields() {
     ),
   );
 
-  // Commerce Shipment Merchant Shipping Cost field base.
+  // Commerce Shipment Merchant Shipping Cost field base. This is the actual
+  // cost the merchant paid for shipping. Used for reporting.
   $fields['field_base']['commerce_shipment_merch_cost'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -259,7 +262,8 @@ function commerce_shipment_installed_fields() {
     ),
   );
 
-  // Commerce Order Shipments reference field base.
+  // Commerce Order Shipments reference field base. References all the shipments
+  // created for this order.
   $fields['field_base']['commerce_shipments'] = array(
     'active' => 1,
     'cardinality' => -1,
