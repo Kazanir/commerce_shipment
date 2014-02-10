@@ -12,43 +12,34 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
   public function tableFields($bundles) {
     $fields = array();
 
-
-
     // Add base fields.
     if (!isset($fields['commerce_shipment_line_items'])) {
-
+      //@todo Add line items field.
     }
     if (!isset($fields['commerce_shipment_tracking_num'])) {
       $fields['commerce_shipment_tracking_num'] = array(
         'type' => 'field',
         'label' => t('Tracking Number'),
-        //'formatter' => 'commerce_product_reference_title_plain',
+        'formatter' => 'text_default',
         'weight' => -99,
       );
     }
     if (!isset($fields['commerce_shipment_status'])) {
-
-    }
-    if (!isset($fields['commerce_shipment_merch_cost'])) {
-
-    }
-
-    // Add base properties.
-    if (!isset($fields['profile_id'])) {
-      $fields['profile_id'] = array(
-        'type' => 'property',
-        'label' => t('Shipping Address'),
-        'formatter' => 'addressfield_default',
+      $fields['commerce_shipment_status'] = array(
+        'type' => 'field',
+        'label' => t('Status'),
+        'formatter' => 'list_default',
         'weight' => -98,
       );
     }
-    if (!isset($fields['transaction_id'])) {
-
+    if (!isset($fields['commerce_shipment_merch_cost'])) {
+      $fields['commerce_shipment_merch_cost'] = array(
+        'type' => 'field',
+        'label' => t('Shipping Cost'),
+        'formatter' => 'commerce_price_formatted_amount',
+        'weight' => -97,
+      );
     }
-    if (!isset($fields['order_id'])) {
-
-    }
-
     return $fields;
   }
 
@@ -65,32 +56,15 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     }
 
     if (!empty($form_state['commerce_order'])) {
-      // Get all the shipping profiles for the order owner.
-      $query = new EntityFieldQuery();
-
-      $query->entityCondition('entity_type', 'commerce_customer_profile', '=')
-            ->entityCondition('bundle', 'shipping', '=')
-            ->propertyCondition('uid', $form_state['commerce_order']->uid, '=');
-      $results = $query->execute();
-      // Set the label for each profile as 'Address 1 . Address 2'
-      $options = array();
-      if (!empty($results['commerce_customer_profile'])) {
-        $profile_entities = entity_load('commerce_customer_profile', array_keys($results['commerce_customer_profile']));
-        foreach ($profile_entities as $entity_id => $profile_entity) {
-          $profile_wrapper = entity_metadata_wrapper('commerce_customer_profile', $profile_entity);
-          $options[$profile_wrapper->profile_id->value()] = t($profile_wrapper->commerce_customer_address->thoroughfare->value() . ", " . $profile_wrapper->commerce_customer_address->premise->value());
-        }
-      }
-      $entity_form['profile_id'] = array(
-        '#type' => 'select',
-        '#title' => t('Shipping Address'),
-        '#default_value' => $entity->profile_id,
-        '#options' => $options,
-        '#required' => TRUE,
-        //'#weight' => $extra_fields['status']['weight'],
-      );
+      // Currently the customer shipping profile ref. field only supports a
+      // single value so we won't set it here. In the future when orders
+      // have multiple shipping addresses we can provide a select list for an
+      // admin to determine which address the shipment is going to.
+      $order = commerce_order_load($form_state['commerce_order']->order_id);
+      $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+      $entity->order_id = $order_wrapper->order_id->value();
     }
-    
+
     return $entity_form;
   }
 }
