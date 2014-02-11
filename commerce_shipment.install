@@ -346,6 +346,51 @@ function commerce_shipment_installed_fields() {
     ),
   );
 
+  $fields['field_base']['commerce_shipment_line_items'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'commerce_shipment_line_items',
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'commerce_shipment_line_item',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'commerce_shipment_line_item',
+  );
+
+  $fields['field_instance']['commerce_shipment_line_items'] = array(
+    'bundle' => 'shipment',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'commerce_shipment_line_item',
+        'settings' => array(),
+        'type' => 'commerce_shipment_line_item_formatter',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'commerce_shipment',
+    'field_name' => 'commerce_shipment_line_items',
+    'label' => 'Line Items',
+    'required' => 1,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'commerce_shipment_line_item',
+      'settings' => array(),
+      'type' => 'commerce_shipment_line_item_widget',
+      'weight' => 4,
+    ),
+  );
+
   return $fields;
 }
 

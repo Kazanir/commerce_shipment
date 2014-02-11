@@ -11,7 +11,7 @@
 function commerce_shipment_line_item_field_info() {
   $fields = array();
 
-  $fields['commerce_shipment_line_items'] = array(
+  $fields['commerce_shipment_line_item'] = array(
     'label' => t('Shipment Line Items'),
     'description' => t('Stores line items contained in a shipment'),
     'default_widget' => 'commerce_shipment_line_item_widget',
@@ -29,7 +29,7 @@ function commerce_shipment_line_item_field_widget_info() {
 
   $widgets['commerce_shipment_line_item_widget'] = array(
     'label' => t('Dynamic line item form'),
-    'field types' => array('commerce_shipment_line_items'),
+    'field types' => array('commerce_shipment_line_item'),
 //    'settings' => array(
 //      'key' => array('value'),
 //    ),
@@ -45,7 +45,7 @@ function commerce_shipment_line_item_field_formatter_info() {
   return array(
     'commerce_shipment_line_item_formatter' => array(
       'label' => t('Default'),
-      'field types' => array('commerce_shipment_line_items'),
+      'field types' => array('commerce_shipment_line_item'),
 //      'settings' => array(
 //        'key' => array('value'),
 //      ),
