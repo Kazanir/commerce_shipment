@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ *  Install, update and uninstall functions for the Commerce Shipment Line Items
+ *  module.
+ */
+
+/**
+ * Implements hook_field_schema()
+ */
+function commerce_shipment_line_items_field_schema() {
+  $columns = array(
+    'line_item_id' => array(
+      'description' => 'The referenced line item ID.',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+  );
+
+  return array(
+    'columns' => $columns,
+  );
+}

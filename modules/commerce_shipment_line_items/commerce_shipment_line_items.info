@@ -1,0 +1,4 @@
+name = Commerce Shipment Line Items
+description = Defines a field to manage line items on shipment entities.
+package = Commerce (contrib)
+core = 7.x

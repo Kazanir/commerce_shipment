@@ -8,6 +8,7 @@ dependencies[] = entity
 dependencies[] = entityreference
 dependencies[] = inline_entity_form
 dependencies[] = commerce_order
+; dependencies[] = commerce_shipment_line_items
 
 ; Entity includes
 files[] = includes/commerce_shipment.controller.inc
