@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Defines a field to attach to shipment entities for managing line items.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function commerce_shipment_line_item_field_info() {
+  return array(
+    // We name our field as the associative name of the array.
+    'commerce_shipment_line_items' => array(
+      'label' => t('Shipment Line Items'),
+      'description' => t('Stores line items contained in a shipment'),
+      'default_widget' => 'commerce_shipment_line_item_widget',
+      'default_formatter' => 'commerce_shipment_line_item_formatter',
+    ),
+  );
+}
