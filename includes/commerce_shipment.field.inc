@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Defines a field for managing line items in shipment entities.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function commerce_shipment_field_info() {
+  $fields = array();
+
+  $fields['commerce_shipment_line_item'] = array(
+    'label' => t('Shipment Line Items'),
+    'description' => t('Stores line items contained in a shipment'),
+    'default_widget' => 'commerce_shipment_line_item_widget',
+    'default_formatter' => 'commerce_shipment_line_item_formatter',
+  );
+
+  return $fields;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function commerce_shipment_field_widget_info() {
+  $widgets = array();
+
+  $widgets['commerce_shipment_line_item_widget'] = array(
+    'label' => t('Dynamic line item form'),
+    'field types' => array('commerce_shipment_line_item'),
+//    'settings' => array(
+//      'key' => array('value'),
+//    ),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function commerce_shipment_field_formatter_info() {
+  return array(
+    'commerce_shipment_line_item_formatter' => array(
+      'label' => t('Default'),
+      'field types' => array('commerce_shipment_line_item'),
+//      'settings' => array(
+//        'key' => array('value'),
+//      ),
+    ),
+  );
+}

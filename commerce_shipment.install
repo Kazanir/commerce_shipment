@@ -69,16 +69,28 @@ function commerce_shipment_schema() {
   return $schema;
 }
 
-
-
 /**
- * Implements hook_uninstall().
+ * Implements hook_field_schema()
  */
-//function commerce_shipment_uninstall() {
-//  module_load_include('module', 'commerce');
-//  // Delete any field instance attached to a shipment type.
-//  module_load_include('module', 'commerce');
-//  commerce_delete_instances('commerce_shipment');
-//  // Purge all field information.
-//  //field_purge_batch(1000);
-//}
+function commerce_shipment_field_schema() {
+  $columns = array(
+    'line_item_id' => array(
+      'description' => 'The referenced line item ID.',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'qty_shipped' => array(
+      'type' => 'numeric',
+      'size' => 'normal',
+      'not null' => TRUE,
+      'default' => 0,
+      'precision' => 10,
+      'scale' => 2,
+    ),
+  );
+
+  return array(
+    'columns' => $columns,
+  );
+}

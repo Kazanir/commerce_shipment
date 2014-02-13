@@ -5,6 +5,9 @@
  * Provides an entity to manage multiple shipments per order.
  */
 
+// Load all Field module hooks for Shipment.
+require_once drupal_get_path('module', 'commerce_shipment') . '/includes/commerce_shipment.field.inc';
+
 /**
  * Implements hook_entity_info().
  */

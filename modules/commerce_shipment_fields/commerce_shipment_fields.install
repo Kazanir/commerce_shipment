@@ -6,32 +6,6 @@
  */
 
 /**
- * Implements hook_field_schema()
- */
-function commerce_shipment_fields_field_schema() {
-  $columns = array(
-    'line_item_id' => array(
-      'description' => 'The referenced line item ID.',
-      'type' => 'int',
-      'not null' => TRUE,
-      'default' => 0,
-    ),
-    'qty_shipped' => array(
-      'type' => 'numeric',
-      'size' => 'normal',
-      'not null' => TRUE,
-      'default' => 0,
-      'precision' => 10,
-      'scale' => 2,
-    ),
-  );
-
-  return array(
-    'columns' => $columns,
-  );
-}
-
-/**
  * Field config and instance definitions.
  *
  * @return array
@@ -318,7 +292,7 @@ function commerce_shipment_fields_installed_fields() {
     'foreign keys' => array(),
     'indexes' => array(),
     'locked' => 0,
-    'module' => 'commerce_shipment_fields',
+    'module' => 'commerce_shipment',
     'settings' => array(),
     'translatable' => 0,
     'type' => 'commerce_shipment_line_item',
@@ -333,7 +307,7 @@ function commerce_shipment_fields_installed_fields() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'commerce_shipment_fields',
+        'module' => 'commerce_shipment',
         'settings' => array(),
         'type' => 'commerce_shipment_line_item_formatter',
         'weight' => 3,
@@ -348,7 +322,7 @@ function commerce_shipment_fields_installed_fields() {
     ),
     'widget' => array(
       'active' => 0,
-      'module' => 'commerce_shipment_fields',
+      'module' => 'commerce_shipment',
       'settings' => array(),
       'type' => 'commerce_shipment_line_item_widget',
       'weight' => 4,
@@ -386,4 +360,24 @@ function commerce_shipment_fields_install_fields() {
       field_create_instance($field_instance);
     }
   }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_shipment_fields_uninstall() {
+  // Delete the field bases, and instances, and their data that this module
+  // creates.
+  $fields = commerce_shipment_fields_installed_fields();
+  foreach($fields['field_base'] as $field) {
+    field_delete_field($field['field_name']);
+  }
+  // Loop over any remaining field instances attached to the 'shipment' bundle
+  // and delete them individually.
+  $instances = field_info_instances('commerce_shipment', 'shipment');
+  foreach ($instances as $instance_name => $instance) {
+    field_delete_instance($instance);
+  }
+  // Purge all field information.
+  field_purge_batch(1000);
 }
