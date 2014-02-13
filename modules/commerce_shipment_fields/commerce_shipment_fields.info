@@ -1,0 +1,6 @@
+name = Commerce Shipment Fields
+description = Defines fields that attach to the default shipment bundle.
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = commerce_shipment

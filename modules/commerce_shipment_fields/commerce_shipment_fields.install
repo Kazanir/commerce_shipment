@@ -8,7 +8,7 @@
 /**
  * Implements hook_field_schema()
  */
-function commerce_shipment_line_item_field_schema() {
+function commerce_shipment_fields_field_schema() {
   $columns = array(
     'line_item_id' => array(
       'description' => 'The referenced line item ID.',

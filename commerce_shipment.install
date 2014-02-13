@@ -427,12 +427,11 @@ function commerce_shipment_install_fields() {
 /**
  * Implements hook_uninstall().
  */
-function commerce_shipment_uninstall() {
-  $fields = commerce_shipment_installed_fields();
-  // Delete all fields, their instances, and data, this module creates.
-  foreach ($fields['field_base'] as $field_base) {
-    field_delete_field($field_base['field_name']);
-  }
-
-  field_purge_batch(1000);
-}
+//function commerce_shipment_uninstall() {
+//  module_load_include('module', 'commerce');
+//  // Delete any field instance attached to a shipment type.
+//  module_load_include('module', 'commerce');
+//  commerce_delete_instances('commerce_shipment');
+//  // Purge all field information.
+//  //field_purge_batch(1000);
+//}

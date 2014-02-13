@@ -8,7 +8,7 @@
 /**
  * Implements hook_field_info().
  */
-function commerce_shipment_line_item_field_info() {
+function commerce_shipment_fields_field_info() {
   $fields = array();
 
   $fields['commerce_shipment_line_item'] = array(
@@ -24,7 +24,7 @@ function commerce_shipment_line_item_field_info() {
 /**
  * Implements hook_field_widget_info().
  */
-function commerce_shipment_line_item_field_widget_info() {
+function commerce_shipment_fields_field_widget_info() {
   $widgets = array();
 
   $widgets['commerce_shipment_line_item_widget'] = array(
@@ -41,7 +41,7 @@ function commerce_shipment_line_item_field_widget_info() {
 /**
  * Implements hook_field_formatter_info().
  */
-function commerce_shipment_line_item_field_formatter_info() {
+function commerce_shipment_fields_field_formatter_info() {
   return array(
     'commerce_shipment_line_item_formatter' => array(
       'label' => t('Default'),
