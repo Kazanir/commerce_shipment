@@ -67,5 +67,12 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
 
     return $entity_form;
   }
-}
 
+  /**
+   * Overrides EntityInlineEntityFormController::entityFormValidate().
+   */
+  public function entityFormValidate($entity_form, &$form_state) {
+    //@todo Add validation requiring at least one line item in a shipment.
+  }
+
+}
