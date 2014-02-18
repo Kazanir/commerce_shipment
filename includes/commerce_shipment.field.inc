@@ -59,10 +59,39 @@ function commerce_shipment_field_formatter_info() {
 function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   //@todo Add validation to qty field to not allow quantity <= 0, i.e. they can't add a line item of <= 0 quantity to a shipment.
   if ($instance['widget']['type'] == 'commerce_shipment_line_item_widget') {
+    // If we're editing an order...
+    if (isset($element['#entity'])) {
+      $shipped_line_items = commerce_shipment_get_shipped_line_items($form_state['commerce_order']);
+      $order_wrapper = entity_metadata_wrapper('commerce_order', $form_state['commerce_order']->order_number);
+      $options = array();
+      if (FALSE/*!empty($shipped_line_items)*/) {
+        // The order has some shipments. Calculate the line items still
+        // available.
+
+      }
+      else {
+        // No shipments have been created yet, thus all line items are
+        // available.
+        foreach ($order_wrapper->commerce_line_items as $line_item) {
+          $options[$line_item->line_item_id->value()] = $line_item->line_item_label->value();
+        }
+      }
+
+      $element['line_item_id'] = array(
+        '#type' => 'select',
+        '#title' => t('Line Item'),
+        '#options' => $options,
+        '#weight' => -99,
+//        '#default_value' => $category['selected'],
+//        '#description' => t('Set this to <em>Yes</em> if you would like this category to be selected by default.'),
+      );
+      dpm('stop');
+    }
     //@todo Add a select list form element.
 
     //@todo Add a quantity text field form element.
   }
+  return $element;
 }
 
 /**

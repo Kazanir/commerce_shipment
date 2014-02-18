@@ -86,14 +86,5 @@ function commerce_shipment_views_data() {
     ),
   );
 
-  // Area handler that provides an 'Add Shipment' button.
-  $data['commerce_shipment']['area_add'] = array(
-    'title' => t('Add Shipment'),
-    'help' => t('Display a button for adding shipments to a specific order.'),
-    'area' => array(
-      'handler' => 'commerce_shipment_handler_area_add',
-    ),
-  );
-
   return $data;
 }
