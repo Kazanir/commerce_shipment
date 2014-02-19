@@ -84,6 +84,22 @@ function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $inst
 }
 
 /**
+ * Implements hook_field_widget_form_alter().
+ */
+function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $context) {
+  // We need to disable the 'Add new shipment' behavior of IEF for the
+  // commerce_shipments field if there are no line items available to ship. Act
+  // on widgets for commerce_shipments instances on order entities.
+  if ($context['field']['field_name'] == 'commerce_shipments' && $context['instance']['entity_type'] == 'commerce_order') {
+    $available_line_items = commerce_shipment_get_available_line_items($context['form']['#entity']);
+    if (empty($available_line_items)) {
+      $element['actions']['ief_add']['#disabled'] = TRUE;
+      $element['actions']['ief_add']['#value'] = t('No line items available to ship');
+    }
+  }
+}
+
+/**
  * Calculates the quantity of available (unshipped) line items in an order.
  *
  * @return
@@ -115,7 +131,7 @@ function commerce_shipment_get_available_line_items($order) {
         if ($quantity_available > 0) {
           $available[] = array(
             'line_item_id' => $line_item->line_item_id->value(),
-            'quantity' => $quantity_available,
+            'qty_available' => $quantity_available,
             'line_item_label' =>$line_item->line_item_label->value(),
           );
         }
@@ -126,7 +142,7 @@ function commerce_shipment_get_available_line_items($order) {
         // the available list.
         $available[] = array(
           'line_item_id' => $line_item->line_item_id->value(),
-          'quantity' => $line_item->quantity->value(),
+          'qty_available' => $line_item->quantity->value(),
           'line_item_label' =>$line_item->line_item_label->value(),
         );
       }
