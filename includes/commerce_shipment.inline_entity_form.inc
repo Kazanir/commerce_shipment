@@ -65,6 +65,13 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
       $entity->order_id = $order_wrapper->order_id->value();
     }
 
+    // Adjust the weights of the form elements we're adding so that line item
+    // selection is at the top.
+    $top_weight = $entity_form['commerce_shipment_line_items']['#weight'];
+    foreach (array_diff(element_children($entity_form), array('commerce_shipment_line_items')) as $field_name) {
+      $entity_form[$field_name]['#weight'] = $top_weight++;
+    }
+    
     return $entity_form;
   }
 

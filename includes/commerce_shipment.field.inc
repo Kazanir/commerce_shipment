@@ -70,7 +70,7 @@ function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $inst
         }
         $element['line_item_id'] = array(
           '#type' => 'select',
-          '#title' => t('Line Item'),
+          '#title' => t('Line Item to Ship'),
           '#options' => $options,
           '#weight' => -99,
 //        '#default_value' => $category['selected'],
