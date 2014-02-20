@@ -71,7 +71,7 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     foreach (array_diff(element_children($entity_form), array('commerce_shipment_line_items')) as $field_name) {
       $entity_form[$field_name]['#weight'] = $top_weight++;
     }
-    
+
     return $entity_form;
   }
 
@@ -81,5 +81,4 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
   public function entityFormValidate($entity_form, &$form_state) {
     //@todo Add validation requiring at least one line item in a shipment.
   }
-
 }
