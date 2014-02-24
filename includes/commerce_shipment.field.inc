@@ -8,18 +8,23 @@
 /**
  * Implements hook_field_info().
  */
-function commerce_shipment_field_info() {
-  $fields = array();
-
-  $fields['commerce_shipment_line_item'] = array(
-    'label' => t('Shipment Line Items'),
-    'description' => t('Stores line items contained in a shipment'),
-    'default_widget' => 'commerce_shipment_line_item_widget',
-    'default_formatter' => 'commerce_shipment_line_item_formatter',
-  );
-
-  return $fields;
-}
+//function commerce_shipment_field_info() {
+// @todo Remove this.
+//  $fields = array();
+//
+//  $fields['commerce_shipment_line_item'] = array(
+//    'label' => t('Shipment Line Items'),
+//    'description' => t('Stores line items contained in a shipment'),
+//    'default_widget' => 'commerce_shipment_line_item_widget',
+//    'default_formatter' => 'commerce_shipment_line_item_formatter',
+//    'settings' => array(),
+//    'instance_settings' => array(),
+//    'property_type' => 'commerce_shipment_line_item',
+//    'property_callbacks' => array('commerce_shipment_property_info_callback'),
+//  );
+//
+//  return $fields;
+//}
 
 /**
  * Implements hook_field_widget_info().
@@ -28,8 +33,8 @@ function commerce_shipment_field_widget_info() {
   $widgets = array();
 
   $widgets['commerce_shipment_line_item_widget'] = array(
-    'label' => t('Dynamic line item form'),
-    'field types' => array('commerce_shipment_line_item'),
+    'label' => t('Dynamic shipment line items form'),
+    'field types' => array('entityreference'),
 //    'settings' => array(
 //      'key' => array('value'),
 //    ),
@@ -41,17 +46,18 @@ function commerce_shipment_field_widget_info() {
 /**
  * Implements hook_field_formatter_info().
  */
-function commerce_shipment_field_formatter_info() {
-  return array(
-    'commerce_shipment_line_item_formatter' => array(
-      'label' => t('Default'),
-      'field types' => array('commerce_shipment_line_item'),
-//      'settings' => array(
-//        'key' => array('value'),
-//      ),
-    ),
-  );
-}
+//function commerce_shipment_field_formatter_info() {
+// @todo Remove this.
+//  return array(
+//    'commerce_shipment_line_item_formatter' => array(
+//      'label' => t('Default'),
+//      'field types' => array('commerce_shipment_line_item'),
+////      'settings' => array(
+////        'key' => array('value'),
+////      ),
+//    ),
+//  );
+//}
 
 /**
  * Implements hook_field_widget_form().
@@ -62,39 +68,55 @@ function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $inst
     if (isset($element['#entity'])) {
       $available_line_items = commerce_shipment_get_available_line_items($form_state['commerce_order']);
       if (!empty($available_line_items)) {
-        // Build the select list's options array keyed by line item ID.
-        $options = array();
-        foreach ($available_line_items as $line_item_id => $info) {
-          $options[$line_item_id] = $info['line_item_label'];
-        }
-        $default = reset($available_line_items);
-        $element['commerce_shipment_line_item_container'] = array(
-          '#type' => 'container',
-          '#attributes' => array(
-            'class' => array('container-inline'),
-          ),
-        );
-        $element['commerce_shipment_line_item_container']['line_item_id'] = array(
-          '#type' => 'select',
-          '#title' => t('Line Item to Ship'),
-          '#options' => $options,
-          '#ajax' => array(
-            'callback' => 'commerce_shipment_line_item_select_ajax',
-            //'wrapper' => $wrapper,
-          ),
-          '#default_value' => $default['line_item_id'],
-        );
-        $element['commerce_shipment_line_item_container']['qty_to_ship'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Quantity'),
-//          '#prefix' => '<div id="' . $wrapper . '">',
-          '#suffix' => '</div>',
-//          '#default_value' => $default['qty_to_ship'],
-          '#size' => 5,
-          '#maxlength' => 128,
-          '#required' => TRUE,
-          '#element_validate' => array('commerce_shipment_qty_to_ship_validate')
-        );
+
+
+
+//        $entered_values = isset($form_state['values']['commerce_shipments'][$langcode]['form']['commerce_shipment_line_items'][$langcode]) ? $form_state['values']['commerce_shipments'][$langcode]['form']['commerce_shipment_line_items'][$langcode] : NULL;
+//        if ($entered_values) {
+//          // We must remove any entered form values from $available_line_items.
+//          foreach ($entered_values as $value) {
+//            $container = isset($value['commerce_shipment_line_item_container']) ? $value['commerce_shipment_line_item_container'] : null;
+//            if ($container) {
+//              $available_line_items[$container['line_item_id']]['available_qty'] -= $container['qty_to_ship'];
+//              if ($available_line_items[$container['line_item_id']]['available_qty'] <= 0) {
+//                unset($available_line_items[$container['line_item_id']]);
+//              }
+//            }
+//          }
+//        }
+//        // Build the select list's options array keyed by line item ID.
+//        $options = array();
+//        foreach ($available_line_items as $line_item_id => $info) {
+//          $options[$line_item_id] = $info['line_item_label'];
+//        }
+//        $default = reset($available_line_items);
+//        $element['commerce_shipment_line_item_container'] = array(
+//          '#type' => 'container',
+//          '#attributes' => array(
+//            'class' => array('container-inline'),
+//          ),
+//        );
+//        $element['commerce_shipment_line_item_container']['line_item_id'] = array(
+//          '#type' => 'select',
+//          '#title' => t('Line Item to Ship'),
+//          '#options' => $options,
+//          '#ajax' => array(
+//            'callback' => 'commerce_shipment_line_item_select_ajax',
+//            //'wrapper' => $wrapper,
+//          ),
+//          '#default_value' => $default['line_item_id'],
+//        );
+//        $element['commerce_shipment_line_item_container']['qty_to_ship'] = array(
+//          '#type' => 'textfield',
+//          '#title' => t('Quantity'),
+////          '#prefix' => '<div id="' . $wrapper . '">',
+//          '#suffix' => '</div>',
+////          '#default_value' => $default['qty_to_ship'],
+//          '#size' => 5,
+//          '#maxlength' => 128,
+//          '#required' => TRUE,
+//          '#element_validate' => array('commerce_shipment_qty_to_ship_validate')
+//        );
       }
     }
   }
@@ -118,6 +140,30 @@ function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $con
 }
 
 /**
+ * Returns the quantity available to ship of a given line item.
+ */
+//function commerce_shipment_get_available_quantity($line_item) {
+// @todo Remove this.
+
+
+//  $query->addExpression('SUM(commerce_shipment_line_items_qty_shipped)', 'sum_of_shipped');
+//  $query->groupBy('commerce_shipment_line_items_line_item_id');
+//
+//  $query->condition('li.commerce_shipment_line_items_line_item_id', $line_item->line_item_id, '=');
+//
+//
+//
+//    // This line item doesn't appear in any shipments thus the entire quantity
+//    // is available.
+//    return $line_item->quantity;
+//  }
+//  else {
+//    return $line_item->quantity - reset($results);
+//  }
+//}
+
+
+/**
  * Calculates the quantity of available (unshipped) line items in an order.
  *
  * @return
@@ -125,66 +171,37 @@ function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $con
  *   an empty array if all line items and their quantities have been shipped.
  */
 function commerce_shipment_get_available_line_items($order) {
-  // Fetch all of the line items in all shipments in $order.
   $query = db_select('commerce_shipment', 'cs');
   $query->join('field_data_commerce_shipment_line_items', 'li', 'cs.shipment_id = li.entity_id');
-  $query->addField('li', 'commerce_shipment_line_items_line_item_id', 'line_item_id');
-  $query->addExpression('SUM(commerce_shipment_line_items_qty_shipped)', 'sum_of_shipped');
-  $query->groupBy('line_item_id');
+
   $query->condition('cs.order_id', $order->order_id, '=');
 
-  $results = $query->execute()->fetchAll();
-  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-  $available = array();
+  $results = $query->execute()->fetchAssoc();
   if (empty($results)) {
-    // There are no shipments on the order thus all line items are available.
-    foreach ($order_wrapper->commerce_line_items as $line_item) {
-      $available[$line_item->line_item_id->value()] = array(
-      //  'line_item_id' => ,
-        'qty_available' => $line_item->quantity->value(),
+
+  }
+
+
+  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+  $available_line_items = array();
+  foreach ($order_wrapper->commerce_line_items as $line_item) {
+    $available_qty = commerce_shipment_get_available_quantity($line_item->value());
+    if ($available_qty > 0) {
+      $available_line_items[$line_item->line_item_id->value()] = array(
+        'available_qty' => $available_qty,
         'line_item_label' => $line_item->line_item_label->value(),
       );
     }
-    return $available;
   }
-  else {
-    foreach ($order_wrapper->commerce_line_items as $line_item) {
-      $found = FALSE;
-      foreach ($results as $shipped_line_item) {
-        if ($shipped_line_item->line_item_id != $line_item->line_item_id->value()) {
-          continue;
-        }
-        $found = TRUE;
-        $quantity_available = $line_item->quantity->value() - $shipped_line_item->sum_of_shipped;
-        if ($quantity_available > 0) {
-          $available[$line_item->line_item_id->value()] = array(
-          //  'line_item_id' => ,
-            'qty_available' => $quantity_available,
-            'line_item_label' => $line_item->line_item_label->value(),
-          );
-        }
-      }
-
-      if (!$found) {
-        // The line item doesn't appear in any shipments. Add full quantity to
-        // the available list.
-        $available[$line_item->line_item_id->value()] = array(
-        //  'line_item_id' => ,
-          'qty_available' => $line_item->quantity->value(),
-          'line_item_label' => $line_item->line_item_label->value(),
-        );
-      }
-    }
-    return $available;
-  }
+  return $available_line_items;
 }
 
 /*
  * Form ajax callback: return the shipment line items field elements.
  */
-function commerce_shipment_line_item_select_ajax(&$form, &$form_state) {
-
-}
+//function commerce_shipment_line_item_select_ajax(&$form, &$form_state) {
+// @todo Remove this.
+//}
 
 /*
  * Element validate callback: verifies quantity of line items in shipment.
@@ -192,3 +209,32 @@ function commerce_shipment_line_item_select_ajax(&$form, &$form_state) {
 function commerce_shipment_qty_to_ship_validate($element, &$form_state, $form) {
   dpm('stop');
 }
+
+/**
+ * Callback to alter the property info of commerce_shipment_line_item fields.
+ *
+ * @see commerce_shipment_field_info().
+ */
+//function commerce_shipment_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
+//// @todo Remove this.
+//  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$field['field_name']];
+//
+//  $property['type'] = ($field['cardinality'] != 1) ? 'list<commerce_shipment_line_item>' : 'commerce_shipment_line_item';
+//
+//  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+//  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+//  unset($property['query callback']);
+//
+//  $property['property info']['line_item_id'] = array(
+//    'type' => 'integer',
+//    'label' => t('Line Item ID'),
+//    'setter callback' => 'entity_property_verbatim_set',
+//    'getter callback' => 'entity_property_verbatim_get',
+//  );
+//  $property['property info']['qty_shipped'] = array(
+//    'type' => 'decimal',
+//    'label' => t('Quantity Shipped'),
+//    'setter callback' => 'entity_property_verbatim_set',
+//    'getter callback' => 'entity_property_verbatim_get',
+//  );
+//}
