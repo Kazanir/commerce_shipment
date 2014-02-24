@@ -285,7 +285,7 @@ function commerce_shipment_fields_installed_fields() {
    // Commerce Shipment field base for tracking line items in a shipment.
   $fields['field_base']['commerce_shipment_line_items'] = array(
     'active' => 1,
-    'cardinality' => -1,
+    'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'commerce_shipment_line_items',

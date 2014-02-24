@@ -68,55 +68,17 @@ function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $inst
     if (isset($element['#entity'])) {
       $available_line_items = commerce_shipment_get_available_line_items($form_state['commerce_order']);
       if (!empty($available_line_items)) {
-
-
-
-//        $entered_values = isset($form_state['values']['commerce_shipments'][$langcode]['form']['commerce_shipment_line_items'][$langcode]) ? $form_state['values']['commerce_shipments'][$langcode]['form']['commerce_shipment_line_items'][$langcode] : NULL;
-//        if ($entered_values) {
-//          // We must remove any entered form values from $available_line_items.
-//          foreach ($entered_values as $value) {
-//            $container = isset($value['commerce_shipment_line_item_container']) ? $value['commerce_shipment_line_item_container'] : null;
-//            if ($container) {
-//              $available_line_items[$container['line_item_id']]['available_qty'] -= $container['qty_to_ship'];
-//              if ($available_line_items[$container['line_item_id']]['available_qty'] <= 0) {
-//                unset($available_line_items[$container['line_item_id']]);
-//              }
-//            }
-//          }
-//        }
-//        // Build the select list's options array keyed by line item ID.
-//        $options = array();
-//        foreach ($available_line_items as $line_item_id => $info) {
-//          $options[$line_item_id] = $info['line_item_label'];
-//        }
-//        $default = reset($available_line_items);
-//        $element['commerce_shipment_line_item_container'] = array(
-//          '#type' => 'container',
-//          '#attributes' => array(
-//            'class' => array('container-inline'),
-//          ),
-//        );
-//        $element['commerce_shipment_line_item_container']['line_item_id'] = array(
-//          '#type' => 'select',
-//          '#title' => t('Line Item to Ship'),
-//          '#options' => $options,
-//          '#ajax' => array(
-//            'callback' => 'commerce_shipment_line_item_select_ajax',
-//            //'wrapper' => $wrapper,
-//          ),
-//          '#default_value' => $default['line_item_id'],
-//        );
-//        $element['commerce_shipment_line_item_container']['qty_to_ship'] = array(
-//          '#type' => 'textfield',
-//          '#title' => t('Quantity'),
-////          '#prefix' => '<div id="' . $wrapper . '">',
-//          '#suffix' => '</div>',
-////          '#default_value' => $default['qty_to_ship'],
-//          '#size' => 5,
-//          '#maxlength' => 128,
-//          '#required' => TRUE,
-//          '#element_validate' => array('commerce_shipment_qty_to_ship_validate')
-//        );
+        // Load the line items.
+        $line_items = commerce_line_item_load_multiple(array_keys($available_line_items));
+        $options = array();
+        foreach ($line_items as $line_item) {
+          $options[$line_item->line_item_id] = 'Line Item ' . $line_item->line_item_id . ', ' . $line_item->line_item_label . ', Qty x' . $line_item->quantity;
+        }
+        $element['line_items'] = array(
+          '#type' => 'checkboxes',
+          '#options' => $options,
+          '#title' => t('Add line items to this shipment'),
+        );
       }
     }
   }
