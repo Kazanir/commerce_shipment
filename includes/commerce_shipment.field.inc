@@ -164,36 +164,19 @@ function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $con
 
 
 /**
- * Calculates the quantity of available (unshipped) line items in an order.
- *
  * @return
- *   An array of line item id's and their available quantities, or
- *   an empty array if all line items and their quantities have been shipped.
+ *   An array of available line items for a given order keyed by line item id.
  */
 function commerce_shipment_get_available_line_items($order) {
-  $query = db_select('commerce_shipment', 'cs');
-  $query->join('field_data_commerce_shipment_line_items', 'li', 'cs.shipment_id = li.entity_id');
+  $query = db_select('field_data_commerce_line_items', 'oli');
+  $query->addField('oli', 'commerce_line_items_line_item_id');
+  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'oli.commerce_line_items_line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->condition('oli.entity_id', $order->order_id, '=');
+  $query->isNull('sli.commerce_shipment_line_items_target_id');
 
-  $query->condition('cs.order_id', $order->order_id, '=');
+  $results = $query->execute()->fetchAllAssoc('commerce_line_items_line_item_id');
 
-  $results = $query->execute()->fetchAssoc();
-  if (empty($results)) {
-
-  }
-
-
-  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-  $available_line_items = array();
-  foreach ($order_wrapper->commerce_line_items as $line_item) {
-    $available_qty = commerce_shipment_get_available_quantity($line_item->value());
-    if ($available_qty > 0) {
-      $available_line_items[$line_item->line_item_id->value()] = array(
-        'available_qty' => $available_qty,
-        'line_item_label' => $line_item->line_item_label->value(),
-      );
-    }
-  }
-  return $available_line_items;
+  return $results;
 }
 
 /*
