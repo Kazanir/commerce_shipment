@@ -13,8 +13,13 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     $fields = array();
 
     // Add base fields.
-    if (!isset($fields['commerce_shipment_line_item'])) {
-      //@todo Add line items field.
+    if (!isset($fields['commerce_shipment_line_items'])) {
+      $fields['commerce_shipment_line_items'] = array(
+        'type' => 'field',
+        'label' => t('Line Items'),
+        'formatter' => 'entityreference_label',
+        'weight' => -100,
+      );
     }
     if (!isset($fields['commerce_shipment_tracking_num'])) {
       $fields['commerce_shipment_tracking_num'] = array(

@@ -5,9 +5,6 @@
  * Provides an entity to manage multiple shipments per order.
  */
 
-// Load all Field module hooks for Shipment.
-require_once drupal_get_path('module', 'commerce_shipment') . '/includes/commerce_shipment.field.inc';
-
 /**
  * Implements hook_entity_info().
  */
@@ -266,4 +263,51 @@ function commerce_shipment_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_shipment') . '/includes/views',
   );
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Alters the entityreference query such that only line items not found in other
+ * shipments are available choices.
+ */
+function commerce_shipment_query_entityreference_alter(QueryAlterableInterface $query) {
+  // Need to ensure we're dealing with the appropriate query i.e. the query to
+  // get available line items referenced by a shipment.
+  $entity = $query->getMetaData('entityreference_selection_handler')->entity;
+  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'commerce_line_item.line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->condition('commerce_line_item.order_id', $entity->order_id, '=');
+  $query->isNull('sli.commerce_shipment_line_items_target_id');
+}
+
+/**
+ * @return
+ *   An array of available line items for a given order keyed by line item id.
+ */
+function commerce_shipment_get_available_line_items($order) {
+  $query = db_select('field_data_commerce_line_items', 'oli');
+  $query->addField('oli', 'commerce_line_items_line_item_id');
+  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'oli.commerce_line_items_line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->condition('oli.entity_id', $order->order_id, '=');
+  $query->isNull('sli.commerce_shipment_line_items_target_id');
+
+  $results = $query->execute()->fetchAllAssoc('commerce_line_items_line_item_id');
+
+  return $results;
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $context) {
+  // We need to disable the 'Add new shipment' behavior of IEF for the
+  // commerce_shipments field if there are no line items available to ship. Act
+  // on widgets for commerce_shipments instances on order entities.
+  if ($context['field']['field_name'] == 'commerce_shipments' && $context['instance']['entity_type'] == 'commerce_order') {
+    $available_line_items = commerce_shipment_get_available_line_items($context['form']['#entity']);
+    if (empty($available_line_items)) {
+      $element['actions']['ief_add']['#disabled'] = TRUE;
+      $element['actions']['ief_add']['#value'] = t('No line items available to ship');
+    }
+  }
 }
