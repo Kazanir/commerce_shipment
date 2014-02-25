@@ -74,10 +74,11 @@ function commerce_shipment_field_widget_form(&$form, &$form_state, $field, $inst
         foreach ($line_items as $line_item) {
           $options[$line_item->line_item_id] = 'Line Item ' . $line_item->line_item_id . ', ' . $line_item->line_item_label . ', Qty x' . $line_item->quantity;
         }
-        $element['line_items'] = array(
+        $element += array(
           '#type' => 'checkboxes',
           '#options' => $options,
           '#title' => t('Add line items to this shipment'),
+          //'#default_value' => $default_values,
         );
       }
     }
@@ -183,3 +184,15 @@ function commerce_shipment_qty_to_ship_validate($element, &$form_state, $form) {
 //    'getter callback' => 'entity_property_verbatim_get',
 //  );
 //}
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Alters the entityreference query
+ */
+function commerce_shipment_query_entityreference_alter(QueryAlterableInterface $query) {
+  // Need to ensure we're dealing with the appropriate query i.e. the query to
+  // get available line items referenced by a shipment.
+  dpm('stop');
+}
+

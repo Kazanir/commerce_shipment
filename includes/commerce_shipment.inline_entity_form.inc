@@ -50,19 +50,13 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     $info = entity_get_info($this->entityType);
     $entity = $entity_form['#entity'];
 
+    if (!empty($form_state['commerce_order'])) {
+      $entity->order_id = $form_state['commerce_order']->order_id;
+    }
+
     if (!empty($info['fieldable'])) {
       $langcode = entity_language($this->entityType, $entity);
       field_attach_form($this->entityType, $entity, $entity_form, $form_state, $langcode);
-    }
-
-    if (!empty($form_state['commerce_order'])) {
-      // Currently the customer shipping profile ref. field only supports a
-      // single value so we won't set it here. In the future when orders
-      // have multiple shipping addresses we can provide a select list for an
-      // admin to determine which address the shipment is going to.
-      $order = commerce_order_load($form_state['commerce_order']->order_id);
-      $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-      $entity->order_id = $order_wrapper->order_id->value();
     }
 
     // Adjust the weights of the form elements we're adding so that line item

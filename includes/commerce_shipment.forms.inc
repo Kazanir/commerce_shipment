@@ -14,7 +14,7 @@
 function commerce_shipment_form($form, &$form_state, $entity, $op, $entity_type) {
 
   // Ensure this include file is loaded when the form is rebuilt from the cache.
-  $form_state['build_info']['files']['form'] = drupal_get_path('module', 'commerce_bundle_item') . '/includes/commerce_shipment.forms.inc';
+  $form_state['build_info']['files']['form'] = drupal_get_path('module', 'commerce_shipment') . '/includes/commerce_shipment.forms.inc';
 
   // Add the field related form elements.
   $langcode = entity_language('commerce_shipment', $entity);
