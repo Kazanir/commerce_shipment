@@ -311,3 +311,12 @@ function commerce_shipment_field_widget_form_alter(&$element, &$form_state, $con
     }
   }
 }
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function commerce_shipment_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'entityreference') {
+    return 'plugins/entityreference/' . $plugin;
+  }
+}

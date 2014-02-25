@@ -68,30 +68,3 @@ function commerce_shipment_schema() {
 
   return $schema;
 }
-
-/**
- * Implements hook_field_schema()
- */
-function commerce_shipment_field_schema() {
-  //@todo Remove this.
-  $columns = array(
-    'line_item_id' => array(
-      'description' => 'The referenced line item ID.',
-      'type' => 'int',
-      'not null' => TRUE,
-      'default' => 0,
-    ),
-    'qty_shipped' => array(
-      'type' => 'numeric',
-      'size' => 'normal',
-      'not null' => TRUE,
-      'default' => 0,
-      'precision' => 10,
-      'scale' => 2,
-    ),
-  );
-
-  return array(
-    'columns' => $columns,
-  );
-}
