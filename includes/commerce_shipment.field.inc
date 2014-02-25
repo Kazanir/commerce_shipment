@@ -193,6 +193,9 @@ function commerce_shipment_qty_to_ship_validate($element, &$form_state, $form) {
 function commerce_shipment_query_entityreference_alter(QueryAlterableInterface $query) {
   // Need to ensure we're dealing with the appropriate query i.e. the query to
   // get available line items referenced by a shipment.
-  dpm('stop');
+  $entity = $query->getMetaData('entityreference_selection_handler')->entity;
+  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'commerce_line_item.line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->condition('commerce_line_item.order_id', $entity->order_id, '=');
+  $query->isNull('sli.commerce_shipment_line_items_target_id');
 }
 
