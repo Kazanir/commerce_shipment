@@ -285,13 +285,13 @@ function commerce_shipment_query_entityreference_alter(QueryAlterableInterface $
  *   An array of available line items for a given order keyed by line item id.
  */
 function commerce_shipment_get_available_line_items($order) {
-  $query = db_select('field_data_commerce_line_items', 'oli');
-  $query->addField('oli', 'commerce_line_items_line_item_id');
-  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'oli.commerce_line_items_line_item_id = sli.commerce_shipment_line_items_target_id');
-  $query->condition('oli.entity_id', $order->order_id, '=');
+  $query = db_select('commerce_line_item', 'li');
+  $query->addField('li', 'line_item_id');
+  $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'li.line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->condition('li.order_id', $order->order_id, '=');
   $query->isNull('sli.commerce_shipment_line_items_target_id');
 
-  $results = $query->execute()->fetchAllAssoc('commerce_line_items_line_item_id');
+  $results = $query->execute()->fetchAllAssoc('line_item_id');
 
   return $results;
 }
