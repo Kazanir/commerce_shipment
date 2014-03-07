@@ -88,3 +88,36 @@ function commerce_shipment_views_data() {
 
   return $data;
 }
+
+function commerce_shipment_views_data_alter(&$data) {
+  // Describe to Views how 'commerce_product_type' table links to the
+  // 'commerce_product' table.
+  $data['commerce_product_type']['table']['join']['commerce_product'] = array(
+      'left_field' => 'type',
+      'field' => 'type',
+  );
+
+  // Describe commerce_product_type fields to Views.
+  $data['commerce_product_type']['table']['group'] = t('Commerce Product Type');
+
+  // Expose the product type.
+  $data['commerce_product_type']['shippable'] = array(
+    'title' => t('Shippable'),
+    'help' => t('Whether or not the product is shippable.'),
+    'field' => array(
+      'handler' => 'views_handler_field_boolean',
+      'click sortable' => TRUE,
+      'output formats' => array(
+        'active-disabled' => array(t('Shippable'), t('Unshippable')),
+      ),
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_boolean_operator',
+      'label' => t('Shippable'),
+      'type' => 'yes-no',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+}

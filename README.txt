@@ -13,7 +13,7 @@ the Inline Entity Form widget which is part of the commerce_shipments
 field that is added to the default order bundle on installation of this module.
 
 When creating or updating a shipment you can only add line items to it that are
-available to ship, meaning line items on that order that do not appear in any
+available to ship, i.e. line items on that order that do not appear in any
 other shipments.
 
 *******************************************************************************

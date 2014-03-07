@@ -6,6 +6,23 @@
  */
 
 /**
+ * Implements hook_schema_alter().
+ *
+ * Add a column to the commerce_product_type table for storing whether a
+ * product type is shippable or not.
+ */
+function commerce_shipment_fields_schema_alter(&$schema) {
+  $schema['commerce_product_type']['fields']['shippable'] = array(
+    'description' => 'Boolean indicating whether or not the product type is shippable.',
+    'type' => 'int',
+    'size' => 'tiny',
+    'not null' => TRUE,
+    'default' => 0,
+  );
+}
+
+
+/**
  * Field config and instance definitions.
  *
  * @return array
@@ -391,6 +408,15 @@ function commerce_shipment_fields_install_fields() {
       field_create_instance($field_instance);
     }
   }
+
+  // Add 'shippable' column to commerce_product_type table.
+  db_add_field('commerce_product_type', 'shippable', array(
+    'description' => 'Boolean indicating whether or not the product type is shippable.',
+    'type' => 'int',
+    'size' => 'tiny',
+    'not null' => TRUE,
+    'default' => 0,
+  ));
 }
 
 /**
@@ -411,4 +437,7 @@ function commerce_shipment_fields_uninstall() {
   }
   // Purge all field information.
   field_purge_batch(1000);
+
+  //Remove the 'shippable' column from commerce_product_type table.
+  db_drop_field('commerce_product_type', 'shippable');
 }
