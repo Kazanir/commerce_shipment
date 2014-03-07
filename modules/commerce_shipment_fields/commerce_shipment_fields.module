@@ -12,3 +12,13 @@ function commerce_shipment_fields_form_commerce_product_ui_product_type_form_alt
     '#default_value' => $form_state['product_type']['shippable'],
   );
 }
+
+/**
+ * Implements hook_views_api().
+ */
+function commerce_shipment_fields_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_shipment_fields') . '/includes/views',
+  );
+}
