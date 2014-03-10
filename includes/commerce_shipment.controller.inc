@@ -66,7 +66,7 @@ class CommerceShipmentEntityController extends EntityAPIController {
       }
     }
 
-    // Determine if we will be inserting a new entiy.
+    // Determine if we will be inserting a new entity.
     $entity->is_new = empty($entity->{$this->idKey});
 
     return parent::save($entity, $transaction);

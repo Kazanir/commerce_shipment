@@ -9,7 +9,7 @@ function commerce_shipment_fields_form_commerce_product_ui_product_type_form_alt
   $form['product_type']['shippable'] = array(
     '#type' => 'checkbox',
     '#title' => t('This is a shippable product type.'),
-    '#default_value' => $form_state['product_type']['shippable'],
+    '#default_value' => isset($form_state['product_type']['shippable']) ? $form_state['product_type']['shippable'] : 0,
   );
 }
 

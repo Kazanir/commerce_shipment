@@ -23,7 +23,8 @@ Commerce Shipment is composed of two modules:
    commerce_shipment - provides entity definition and base hooks,
    commerce_shipment_fields - provides fields for the default shipment bundle,
                               a shipment ref field on the default order bundle,
-                              and field cleanup uninstall hook.
+                              field cleanup uninstall hook, and the default View
+                              'Unshipped Items'.
 
 Both are needed and should be installed.
 
