@@ -52,17 +52,13 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
    * Overrides EntityInlineEntityFormController::entityForm().
    */
   public function entityForm($entity_form, &$form_state) {
-    $info = entity_get_info($this->entityType);
-    $entity = $entity_form['#entity'];
-
+    // Add the order_id to our shipment entity for use in retrieving available
+    // line items by our override of getReferencableEntities().
     if (!empty($form_state['commerce_order'])) {
-      $entity->order_id = $form_state['commerce_order']->order_id;
+      $entity_form['#entity']->order_id = $form_state['commerce_order']->order_id;
     }
 
-    if (!empty($info['fieldable'])) {
-      $langcode = entity_language($this->entityType, $entity);
-      field_attach_form($this->entityType, $entity, $entity_form, $form_state, $langcode);
-    }
+    $entity_form = parent::entityForm($entity_form, $form_state);
 
     // Adjust the weights of the form elements we're adding so that line item
     // selection is at the top.

@@ -16,6 +16,10 @@ When creating or updating a shipment you can only add line items to it that are
 available to ship, i.e. line items on that order that do not appear in any
 other shipments.
 
+A checkbox is added to the product type edit form specifying whether a product
+type is shippable or not. Only shippable items are returned by the default
+Unshipped Items View.
+
 *******************************************************************************
 
 INSTALLATION:
