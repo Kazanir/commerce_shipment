@@ -76,4 +76,12 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
   public function entityFormValidate($entity_form, &$form_state) {
     //@todo Add validation requiring at least one line item in a shipment.
   }
+
+  /**
+   * Overrides EntityInlineEntityFormController::entityFormSubmit().
+   */
+  public function entityFormSubmit(&$entity_form, &$form_state) {
+    parent::entityFormSubmit($entity_form, $form_state);
+    drupal_set_message(t('New shipments on this order will not be saved until the <em>Save order</em> button is clicked.'), 'warning');
+  }
 }
