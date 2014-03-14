@@ -269,7 +269,7 @@ function commerce_shipment_fields_installed_fields() {
         'settings' => array(
           'link' => FALSE,
         ),
-        'type' => 'entityreference_label',
+        'type' => 'commerce_shipment_reference_view',
         'weight' => -4,
       ),
     ),

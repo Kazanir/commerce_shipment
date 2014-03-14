@@ -11,6 +11,7 @@
 function commerce_shipment_fields_views_default_views() {
   $views = array();
 
+  /**************** Unshipped Items View for fulfilling orders*************/
   $view = new view();
   $view->name = 'commerce_shipment_unshipped_items';
   $view->description = '';
@@ -185,6 +186,72 @@ function commerce_shipment_fields_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
+
+  $views[$view->name] = $view;
+
+  /**************** Shipments View for entityref field formatter*************/
+  $view = new view();
+  $view->name = 'commerce_shipment_table';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'commerce_shipment';
+  $view->human_name = 'Shipments';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'shipment_id' => 'shipment_id',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'shipment_id' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Field: Commerce Shipment: Shipment ID */
+  $handler->display->display_options['fields']['shipment_id']['id'] = 'shipment_id';
+  $handler->display->display_options['fields']['shipment_id']['table'] = 'commerce_shipment';
+  $handler->display->display_options['fields']['shipment_id']['field'] = 'shipment_id';
+  /* Field: Commerce Shipment: Line Items */
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['id'] = 'commerce_shipment_line_items';
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['table'] = 'field_data_commerce_shipment_line_items';
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['field'] = 'commerce_shipment_line_items';
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['label'] = 'Items';
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['settings'] = array(
+    'link' => 0,
+  );
+  $handler->display->display_options['fields']['commerce_shipment_line_items']['delta_offset'] = '0';
+  /* Field: Commerce Shipment: Status */
+  $handler->display->display_options['fields']['commerce_shipment_status']['id'] = 'commerce_shipment_status';
+  $handler->display->display_options['fields']['commerce_shipment_status']['table'] = 'field_data_commerce_shipment_status';
+  $handler->display->display_options['fields']['commerce_shipment_status']['field'] = 'commerce_shipment_status';
+  /* Field: Commerce Shipment: Tracking Number */
+  $handler->display->display_options['fields']['commerce_shipment_tracking_num']['id'] = 'commerce_shipment_tracking_num';
+  $handler->display->display_options['fields']['commerce_shipment_tracking_num']['table'] = 'field_data_commerce_shipment_tracking_num';
+  $handler->display->display_options['fields']['commerce_shipment_tracking_num']['field'] = 'commerce_shipment_tracking_num';
+  /* Contextual filter: Commerce Shipment: Shipment ID */
+  $handler->display->display_options['arguments']['shipment_id']['id'] = 'shipment_id';
+  $handler->display->display_options['arguments']['shipment_id']['table'] = 'commerce_shipment';
+  $handler->display->display_options['arguments']['shipment_id']['field'] = 'shipment_id';
+  $handler->display->display_options['arguments']['shipment_id']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['shipment_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['shipment_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['shipment_id']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['shipment_id']['break_phrase'] = TRUE;
 
   $views[$view->name] = $view;
 
