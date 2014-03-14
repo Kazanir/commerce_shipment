@@ -16,7 +16,8 @@ class  EntityReference_SelectionHandler_Generic_commerce_line_item extends Entit
    * Returns a more meaningful label for managing line items ref. by shipments.
    */
   public function commerce_shipment_line_item_get_label($entity) {
-    return t('@line_item_label, x@qty',array('@line_item_label' => $entity->line_item_label, '@qty' => $entity->quantity));
+    $entity_wrapper = entity_metadata_wrapper('commerce_line_item', $entity);
+    return t('@product_title, x@qty',array('@product_title' => $entity_wrapper->commerce_product->title->value(), '@qty' => $entity->quantity));
   }
 
   /**
