@@ -305,3 +305,19 @@ function commerce_shipment_ctools_plugin_directory($module, $plugin) {
     return 'plugins/entityreference/' . $plugin;
   }
 }
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function commerce_shipment_field_formatter_info() {
+  return array(
+    'commerce_shipment_reference_view' => array(
+      'label' => t('Shipment View'),
+      'description' => t('Display the shipments via a default View.'),
+      'field types' => array('entityreference'),
+      'settings' => array(
+        'view' => 'commerce_shipment_table|default',
+      ),
+    ),
+  );
+}
