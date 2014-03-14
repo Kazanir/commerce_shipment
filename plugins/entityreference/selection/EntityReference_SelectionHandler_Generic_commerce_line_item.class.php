@@ -17,7 +17,7 @@ class  EntityReference_SelectionHandler_Generic_commerce_line_item extends Entit
    */
   public function commerce_shipment_line_item_get_label($entity) {
     $entity_wrapper = entity_metadata_wrapper('commerce_line_item', $entity);
-    return t('@product_title, x@qty',array('@product_title' => $entity_wrapper->commerce_product->title->value(), '@qty' => $entity->quantity));
+    return t('@product_title x @qty',array('@product_title' => $entity_wrapper->commerce_product->title->value(), '@qty' => $entity->quantity));
   }
 
   /**

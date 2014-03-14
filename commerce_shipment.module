@@ -321,3 +321,31 @@ function commerce_shipment_field_formatter_info() {
     ),
   );
 }
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function commerce_shipment_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $result = array();
+
+  // Collect the list of shipment IDs.
+  $shipment_ids = array();
+
+  foreach ($items as $delta => $item) {
+    $shipment_ids[] = $item['target_id'];
+  }
+
+  switch ($display['type']) {
+    case 'commerce_shipment_reference_view':
+      // Extract the View and display ID from the setting.
+      list($view_id, $display_id) = explode('|', $display['settings']['view']);
+
+      $result[0] = array(
+        '#markup' => commerce_embed_view($view_id, $display_id, array(implode(',', $shipment_ids))),
+      );
+
+      break;
+  }
+
+  return $result;
+}
