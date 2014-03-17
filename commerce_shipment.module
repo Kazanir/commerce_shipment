@@ -273,7 +273,11 @@ function commerce_shipment_get_available_line_items($order) {
   $query = db_select('commerce_line_item', 'li');
   $query->addField('li', 'line_item_id');
   $query->leftJoin('field_data_commerce_shipment_line_items', 'sli', 'li.line_item_id = sli.commerce_shipment_line_items_target_id');
+  $query->leftJoin('field_data_commerce_product', 'fdcp', 'li.line_item_id = fdcp.entity_id');
+  $query->leftJoin('commerce_product', 'cp', 'fdcp.commerce_product_product_id = cp.product_id');
+  $query->leftJoin('commerce_product_type', 'cpt', 'cp.type = cpt.type');
   $query->condition('li.order_id', $order->order_id, '=');
+  $query->condition('cpt.shippable', 1, '=');
   $query->isNull('sli.commerce_shipment_line_items_target_id');
 
   $results = $query->execute()->fetchAllAssoc('line_item_id');
