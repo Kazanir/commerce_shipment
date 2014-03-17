@@ -34,7 +34,6 @@ function commerce_shipment_entity_property_info() {
     'label' => t("Shipment Payment Transaction"),
     'type' => 'commerce_payment_transaction',
     'description' => t("The unique ID of the payment transaction used for the shipment."),
-    //@todo the setter's and getter's might need to be custom.
     'setter callback' => 'entity_property_verbatim_set',
     'setter permission' => 'administer commerce_shipment entities',
     'required' => TRUE,
@@ -45,7 +44,6 @@ function commerce_shipment_entity_property_info() {
     'label' => t("Shipment Shipping Profile"),
     'type' => 'commerce_customer_profile',
     'description' => t("The unique ID of the shipping profile used for the shipment."),
-    //@todo the setter's and getter's might need to be custom.
     'setter callback' => 'entity_property_verbatim_set',
     'setter permission' => 'administer commerce_shipment entities',
     'required' => TRUE,

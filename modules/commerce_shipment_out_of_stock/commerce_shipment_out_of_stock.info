@@ -1,0 +1,6 @@
+name = Commerce Shipment Out of Stock
+description = An optional extension for selling out of stock products.
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = commerce_shipment_fields
