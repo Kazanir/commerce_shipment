@@ -100,7 +100,7 @@ function commerce_shipment_views_data_alter(&$data) {
   // Describe commerce_product_type fields to Views.
   $data['commerce_product_type']['table']['group'] = t('Commerce Product Type');
 
-  // Expose the product type.
+  // Expose the shippable property.
   $data['commerce_product_type']['shippable'] = array(
     'title' => t('Shippable'),
     'help' => t('Whether or not the product is shippable.'),

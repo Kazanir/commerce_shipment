@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * @todo Fill this out
+ */
+
+/**
+ * Implements hook_commerce_payment_transaction_charge_alter().
+ */
+function commerce_shipment_outofstock_commerce_payment_transaction_charge_alter($order, &$charge) {
+  // We don't charge for in-stock, shippable, items.
+  if (!empty($order)) {
+    $charge['amount'] = 0;
+    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+    foreach ($order_wrapper->commerce_line_items as $line_item_wrapper) {
+      // Add non-product type line items (e.g. shipping fee, discounts),
+      // non-shippable product items (e.g. digital), and shippable in stock
+      // to the transaction charge.
+      if ($line_item_wrapper->type->value() == 'product') {
+        $type_data = commerce_product_type_load($line_item_wrapper->commerce_product->type->value());
+        $stock = isset($line_item_wrapper->commerce_product->commerce_stock) ? $line_item_wrapper->commerce_product->commerce_stock->raw() : 0;
+        if ($type_data['shippable'] && $stock <= 0) {
+          continue;
+        }
+      }
+      $charge['amount'] += $line_item_wrapper->commerce_total->amount->value();
+    }
+  }
+}
