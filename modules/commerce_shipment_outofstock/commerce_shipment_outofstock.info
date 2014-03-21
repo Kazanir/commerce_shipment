@@ -5,3 +5,5 @@ core = 7.x
 
 dependencies[] = commerce_shipment_fields
 dependencies[] = commerce_stock
+dependencies[] = commerce_cardonfile
+
