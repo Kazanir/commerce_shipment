@@ -11,12 +11,12 @@
 function commerce_shipment_outofstock_rules_action_info() {
   $actions = array();
 
-  $actions['commerce_shipment_outofstock_checkout'] = array(
-    'label' => t('Capture checkout amount'),
+  $actions['commerce_shipment_outofstock_capture_shipment'] = array(
+    'label' => t('Capture shipment charge'),
     'parameter' => array(
-      'commerce_order' => array(
-        'type' => 'commerce_order',
-        'label' => t('Order in checkout'),
+      'commerce_shipment' => array(
+        'type' => 'commerce_shipment',
+        'label' => t('New Shipment'),
       ),
     ),
     'group' => t('Commerce Shipment'),
@@ -26,33 +26,16 @@ function commerce_shipment_outofstock_rules_action_info() {
 }
 
 /**
- * Action callback: Captures appropriate funds on checkout, and creates a
- * shipment.
+ * Action callback: Attempts to auth+capture against all line items in shipment.
  *
- * The amount captured is the sum of all in-stock (shippable) line items +
- * any non-product line items (e.g. shipping fee). A shipment is created with
- * all in-stock (shippable) items, and we associate the payment transaction with
- * it so there's no chance of double charging.
+ *
  */
-function commerce_shipment_outofstock_checkout($order) {
-  // If everything was successful up to this point, then we expect to see a
-  // pending (i.e. auth only) payment transaction, for this order for the amount
-  // of the order total.
-  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'commerce_payment_transaction');
-  $query->propertyCondition('order_id', $order_wrapper->order_id->value());
-  $query->propertyCondition('status', 'pending');
-  $query->propertyCondition('amount', $order_wrapper->commerce_order_total->amount->value());
+function commerce_shipment_outofstock_capture_shipment($shipment) {
+  // Look for a default cof for the order owner. If there is none, log it in
+  // watchdog, set a message, and abort.
+  return;
+  // Calculate the charge to be applied.
 
-  $results = $query->execute();
-
-  if (!empty($results['commerce_payment_transaction'])) {
-    $ids = array_keys($results['commerce_payment_transaction']);
-    $payment_txn = commerce_payment_transaction_load(reset($ids));
-    dpm($payment_txn);
-
-  }
-
-
+  // If for some odd reason charge is greater than order balance, set the charge
+  // to be the order balance.
 }
