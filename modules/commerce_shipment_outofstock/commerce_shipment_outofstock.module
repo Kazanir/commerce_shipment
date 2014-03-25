@@ -9,10 +9,11 @@
  * Implements hook_commerce_payment_transaction_charge_alter().
  */
 function commerce_shipment_outofstock_commerce_payment_transaction_charge_alter($order, &$charge) {
-  // We don't charge for in-stock, shippable, items.
+  // We don't charge for out-of-stock, shippable, items.
   if (!empty($order)) {
     $charge['amount'] = 0;
     $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+    $shipment_items = array();
     foreach ($order_wrapper->commerce_line_items as $line_item_wrapper) {
       // Add non-product type line items (e.g. shipping fee, discounts),
       // non-shippable product items (e.g. digital), and shippable in stock
@@ -20,11 +21,34 @@ function commerce_shipment_outofstock_commerce_payment_transaction_charge_alter(
       if ($line_item_wrapper->type->value() == 'product') {
         $type_data = commerce_product_type_load($line_item_wrapper->commerce_product->type->value());
         $stock = isset($line_item_wrapper->commerce_product->commerce_stock) ? $line_item_wrapper->commerce_product->commerce_stock->raw() : 0;
-        if ($type_data['shippable'] && $stock <= 0) {
-          continue;
+        if ($type_data['shippable']) {
+          if ($stock <= 0) {
+            continue;
+          }
+          else {
+            // It's in-stock and shippable. Add it to our items array.
+            $shipment_items[] = $line_item_wrapper->line_item_id->value();
+          }
         }
       }
       $charge['amount'] += $line_item_wrapper->commerce_total->amount->value();
+    }
+    if (!empty($shipment_items)) {
+      // There are shippable in-stock line items on the order. We create and
+      // save a shipment so we avoid any double-charging of items.
+      $values = array(
+       'type' => 'shipment',
+       'order_id' => $order->order_id,
+      );
+      $shipment = entity_create('commerce_shipment', $values);
+      $shipment_wrapper = entity_metadata_wrapper('commerce_shipment', $shipment);
+      $shipment_wrapper->commerce_shipment_status = 'incomplete';
+      foreach ($shipment_items as $line_item_id) {
+        $shipment_wrapper->commerce_shipment_line_items[] = $line_item_id;
+      }
+      $shipment_wrapper->save();
+      $order_wrapper->commerce_shipments[] = $shipment_wrapper->value();
+      $order_wrapper->save();
     }
   }
 }
