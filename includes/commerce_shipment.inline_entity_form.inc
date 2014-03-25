@@ -13,38 +13,30 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     $fields = array();
 
     // Add base fields.
-    if (!isset($fields['commerce_shipment_line_items'])) {
-      $fields['commerce_shipment_line_items'] = array(
-        'type' => 'field',
-        'label' => t('Line Items'),
-        'formatter' => 'entityreference_label',
-        'weight' => -100,
-      );
-    }
-    if (!isset($fields['commerce_shipment_tracking_num'])) {
-      $fields['commerce_shipment_tracking_num'] = array(
-        'type' => 'field',
-        'label' => t('Tracking Number'),
-        'formatter' => 'text_default',
-        'weight' => -99,
-      );
-    }
-    if (!isset($fields['commerce_shipment_status'])) {
-      $fields['commerce_shipment_status'] = array(
-        'type' => 'field',
-        'label' => t('Status'),
-        'formatter' => 'list_default',
-        'weight' => -98,
-      );
-    }
-    if (!isset($fields['commerce_shipment_merch_cost'])) {
-      $fields['commerce_shipment_merch_cost'] = array(
-        'type' => 'field',
-        'label' => t('Shipping Cost'),
-        'formatter' => 'commerce_price_formatted_amount',
-        'weight' => -97,
-      );
-    }
+    $fields['commerce_shipment_line_items'] = array(
+      'type' => 'field',
+      'label' => t('Line Items'),
+      'formatter' => 'entityreference_label',
+      'weight' => -100,
+    );
+    $fields['commerce_shipment_tracking_num'] = array(
+      'type' => 'field',
+      'label' => t('Tracking Number'),
+      'formatter' => 'text_default',
+      'weight' => -99,
+    );
+    $fields['commerce_shipment_status'] = array(
+      'type' => 'field',
+      'label' => t('Status'),
+      'formatter' => 'list_default',
+      'weight' => -98,
+    );
+    $fields['commerce_shipment_merch_cost'] = array(
+      'type' => 'field',
+      'label' => t('Shipping Cost'),
+      'formatter' => 'commerce_price_formatted_amount',
+      'weight' => -97,
+    );
     return $fields;
   }
 
