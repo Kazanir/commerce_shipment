@@ -360,7 +360,7 @@ function commerce_shipment_fields_installed_fields() {
     'entity_type' => 'commerce_shipment',
     'field_name' => 'commerce_shipment_line_items',
     'label' => 'Line Items',
-    'required' => 1,
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
