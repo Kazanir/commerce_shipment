@@ -5,6 +5,13 @@
  * Provides an entity to manage multiple shipments per order.
  */
 
+// Shipment charge method options.
+define('COMMERCE_SHIPMENT_NO_CHARGE', 'NO_CHARGE');
+// Associate the charge with an existing payment transaction.
+define('COMMERCE_SHIPMENT_ASSOC_CHARGE', 'ASSOC_CHARGE');
+define('COMMERCE_SHIPMENT_NEW_CHARGE', 'NEW_CHARGE');
+
+
 /**
  * Implements hook_entity_info().
  */

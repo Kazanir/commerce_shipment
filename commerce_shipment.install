@@ -28,13 +28,13 @@ function commerce_shipment_schema() {
       'transaction_id' => array(
         'description' => 'The unique ID of the payment transaction used for the shipment.',
         'type' => 'int',
-        'not null' => TRUE,
+        'not null' => FALSE,
         'default' => 0,
       ),
       'profile_id' => array(
         'description' => 'The unique ID of the shipping profile used for the shipment.',
         'type' => 'int',
-        'not null' => TRUE,
+        'not null' => FALSE,
         'default' => 0,
       ),
       'type' => array(
