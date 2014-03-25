@@ -24,9 +24,9 @@ class CommerceShipmentEntityController extends EntityAPIController {
   public function create(array $values = array()) {
     $values += array(
       'shipment_id' => NULL,
-      'order_id' => 0,
-      'transaction_id' => 0,
-      'profile_id' => 0,
+      'order_id' => NULL,
+      'transaction_id' => NULL,
+      'profile_id' => NULL,
       'type' => '',
       'created' => '',
       'changed' => '',
