@@ -53,7 +53,6 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
 
     $entity_form = parent::entityForm($entity_form, $form_state);
 
-
     if (!isset($shipment->transaction_id)) {
       // Check to see if there are any charge methods available for this shipment.
       $charge_options = array();
@@ -132,13 +131,23 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
   public function entityFormValidate($entity_form, &$form_state) {
     $shipment = $entity_form['#entity'];
     $parents_path = implode('][', $entity_form['#parents']);
-    $shipment_values = drupal_array_get_nested_value($form_state['values'], $entity_form['#parents']);
-    $shipment_items = $shipment_values['commerce_shipment_line_items'];
+    $line_items = drupal_array_get_nested_value($form_state['values'], $entity_form['commerce_shipment_line_items']['#parents']);
     $lang = $entity_form['commerce_shipment_line_items']['#language'];
-    $item = reset($shipment_items[$lang]);
+    $item = reset($line_items[$lang]);
 
-    if ($shipment->is_new && !isset($item['target_id'])) {
-      form_set_error($parents_path . '][commerce_shipment_line_items', t('You must add a line item to the shipment'));
+    if ($shipment->is_new) {
+      if (!isset($item['target_id'])) {
+        form_set_error($parents_path . '][commerce_shipment_line_items', t('You must add a line item to the shipment'));
+      }
+    }
+    else {
+      // The shipment is being edited. Add existing line items to
+      // $form_state['values'].
+      $shipment_wrapper = entity_metadata_wrapper('commerce_shipment', $shipment);
+      foreach ($shipment_wrapper->commerce_shipment_line_items as $line_item_wrapper) {
+        $line_items[$lang][]['target_id'] = $line_item_wrapper->line_item_id->value();
+      }
+      drupal_array_set_nested_value($form_state['values'], $entity_form['commerce_shipment_line_items']['#parents'], $line_items);
     }
   }
 
