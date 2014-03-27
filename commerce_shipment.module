@@ -273,8 +273,13 @@ function commerce_shipment_views_api() {
 }
 
 /**
+ * Retrieves an array of line items available to a shipment, on a given order.
+ *
+ * @param $order
+ *   A fully loaded order object.
+ *
  * @return
- *   An array of available line items for a given order keyed by line item id.
+ *   An array of available line items, keyed by line item id.
  */
 function commerce_shipment_get_available_line_items($order) {
   $query = db_select('commerce_line_item', 'li');
@@ -359,4 +364,28 @@ function commerce_shipment_field_formatter_view($entity_type, $entity, $field, $
   }
 
   return $result;
+}
+
+/**
+ * Retrieves an appropriate payment transaction for a given order.
+ *
+ * Queries the db for the most recent payment transaction, for a given order,
+ * that is not associated with any other shipments. Useful when trying to
+ * associate a newly created payment transaction with a shipment.
+ *
+ * @param $order_id
+ *
+ * @return
+ *  An array of payment transaction id's keyed by id.
+ */
+
+function commerce_shipment_find_txn_id($order_id) {
+  $query = db_select('commerce_payment_transaction', 'cpt');
+  $query->addField('cpt', 'transaction_id');
+  $query->leftJoin('commerce_shipment', 'cs', 'cpt.transaction_id = cs.transaction_id');
+  $query->condition('cpt.order_id', $order_id, '=');
+  $query->isNull('cs.transaction_id');
+  $query->orderBy('cpt.created', 'DESC');
+
+  return $query->execute()->fetchAllAssoc('transaction_id');
 }

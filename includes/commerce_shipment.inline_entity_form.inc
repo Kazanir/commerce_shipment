@@ -92,7 +92,8 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
 
       // Now check for card on file option.
       $order = commerce_order_load($shipment->order_id);
-      if (module_exists('commerce_cardonfile') && commerce_payment_order_balance($order) > 0) {
+      if (module_exists('commerce_cardonfile') && module_exists('commerce_shipment_outofstock')
+          && commerce_payment_order_balance($order) > 0) {
         $charge_options[COMMERCE_SHIPMENT_NEW_CHARGE] = t('Create a new charge using the order owner\'s default card on file');
       }
 
@@ -165,17 +166,10 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
         break;
       case COMMERCE_SHIPMENT_NEW_CHARGE:
         // Attempt to charge the order owner's default card on file.
-        $response = commerce_shipment_outofstock_capture_shipment($entity_form['#entity']);
+        commerce_shipment_outofstock_capture_shipment($entity_form['#entity']);
         // If a transaction was created it will be the most recent one for this
         // order that is not associated with any other shipments.
-        $query = db_select('commerce_payment_transaction', 'cpt');
-        $query->addField('cpt', 'transaction_id');
-        $query->leftJoin('commerce_shipment', 'cs', 'cpt.transaction_id = cs.transaction_id');
-        $query->condition('cpt.order_id', $form_state['commerce_order']->order_id, '=');
-        $query->isNull('cs.transaction_id');
-        $query->orderBy('cpt.created', 'DESC');
-
-        $results = $query->execute()->fetchAllAssoc('transaction_id');
+        $results = commerce_shipment_find_txn_id($form_state['commerce_order']->order_id);
 
         if (!empty($results)) {
           // Set the payment transaction id for the shipment.
