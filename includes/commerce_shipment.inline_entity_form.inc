@@ -141,7 +141,7 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
       }
     }
     else {
-      // The shipment is being edited. Add existing line items to
+      // The shipment is being updated. Add existing line items to
       // $form_state['values'].
       $shipment_wrapper = entity_metadata_wrapper('commerce_shipment', $shipment);
       foreach ($shipment_wrapper->commerce_shipment_line_items as $line_item_wrapper) {
@@ -156,6 +156,33 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
    */
   public function entityFormSubmit(&$entity_form, &$form_state) {
     parent::entityFormSubmit($entity_form, $form_state);
-    drupal_set_message(t('New shipments on this order will not be saved until the <em>Save order</em> button is clicked.'), 'warning');
+
+    $charge = drupal_array_get_nested_value($form_state['values'], $entity_form['commerce_shipment_charge']['#parents']);
+    switch ($charge['select']) {
+      case COMMERCE_SHIPMENT_ASSOC_CHARGE:
+        // Set the payment transaction id for the shipment.
+        $entity_form['#entity']->transaction_id = $charge['commerce_shipment_txn_list'];
+        break;
+      case COMMERCE_SHIPMENT_NEW_CHARGE:
+        // Attempt to charge the order owner's default card on file.
+        $response = commerce_shipment_outofstock_capture_shipment($entity_form['#entity']);
+        // If a transaction was created it will be the most recent one for this
+        // order that is not associated with any other shipments.
+        $query = db_select('commerce_payment_transaction', 'cpt');
+        $query->addField('cpt', 'transaction_id');
+        $query->leftJoin('commerce_shipment', 'cs', 'cpt.transaction_id = cs.transaction_id');
+        $query->condition('cpt.order_id', $form_state['commerce_order']->order_id, '=');
+        $query->isNull('cs.transaction_id');
+        $query->orderBy('cpt.created', 'DESC');
+
+        $results = $query->execute()->fetchAllAssoc('transaction_id');
+
+        if (!empty($results)) {
+          // Set the payment transaction id for the shipment.
+          $entity_form['#entity']->transaction_id = reset($results)->transaction_id;
+        }
+        break;
+    }
+    drupal_set_message(t('Shipments on this order will not be saved until the <em>Save order</em> button is clicked.'), 'warning');
   }
 }

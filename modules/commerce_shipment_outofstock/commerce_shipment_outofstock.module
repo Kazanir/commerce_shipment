@@ -52,3 +52,60 @@ function commerce_shipment_outofstock_commerce_payment_transaction_charge_alter(
     }
   }
 }
+
+/**
+ * Attempts to auth+capture against all line items in $shipment.
+ *
+ * @param $shipment
+ *  A fully loaded shipment object.
+ *
+ * @return
+ *  A message indicating success or failure. If successful the response with
+ *  card data is returned as well.
+ */
+function commerce_shipment_outofstock_capture_shipment($shipment) {
+  // Look for a default cof for the order owner. If there is none, log it in
+  // watchdog, set a message, and abort.
+  $order = commerce_order_load($shipment->order_id);
+  $response = commerce_cardonfile_order_select_card($order);
+  $message_vars = array(
+    '@order_id' => $order->order_id,
+    '@uid' => $order->uid,
+  );
+  if ($response['code'] != COMMERCE_COF_PROCESS_CODE_CARD_OK) {
+    if (isset($response['card_chosen'])) {
+      // It's an expired card. Add the card_id to our message.
+      $message_vars['@card_id'] = $response['card_chosen']->card_id;
+    }
+    watchdog('commerce_shipment_outofstock', $response['message'], $message_vars);
+    return drupal_set_message(t($response['message'], $message_vars), 'warning');
+  }
+  // Calculate the charge to be applied.
+  $shipment_wrapper = entity_metadata_wrapper('commerce_shipment', $shipment);
+  $charge = array(
+    'amount' => 0,
+    'currency_code' => '',
+  );
+  foreach ($shipment_wrapper->commerce_shipment_line_items as $line_item_wrapper) {
+    $charge['amount'] += $line_item_wrapper->commerce_total->amount->value();
+  }
+  // Attempt to charge the card.
+  $balance = commerce_payment_order_balance($order);
+  if (!isset($balance)) {
+    watchdog('commerce_shipment_outofstock', 'Could not find a balance for order @order_id. A shipment charge was not created.', array('@order_id' => $order->order_id));
+    return drupal_set_message(t('Could not find a balance for order @order_id. A shipment charge was not created.', array('@order_id' => $order->order_id)), 'warning');
+  }
+  // If for some odd reason charge is greater than order balance, set the charge
+  // to be the order balance.
+  if ($charge['amount'] > $balance['amount']) {
+    $charge = $balance;
+  }
+  else {
+    $charge['currency_code'] = $balance['currency_code'];
+  }
+  // Create and execute a payment transaction for the charge amount.
+  $charge_response = commerce_cardonfile_order_charge_card($order, $charge, $response['card_chosen']);
+  watchdog('commerce_shipment_outofstock', $charge_response['message'], $charge_response['message_variables']);
+  drupal_set_message(t($charge_response['message'], $charge_response['message_variables']), 'status');
+  return $charge_response;
+}
