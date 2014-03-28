@@ -37,6 +37,12 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
       'formatter' => 'commerce_price_formatted_amount',
       'weight' => -97,
     );
+    $fields['transaction_id'] = array(
+      'type' => 'property',
+      'label' => t('Payment'),
+      //'formatter' => 'commerce_price_formatted_amount',
+      'weight' => -96,
+    );
     return $fields;
   }
 
@@ -92,8 +98,9 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
 
       // Now check for card on file option.
       $order = commerce_order_load($shipment->order_id);
+      $balance = commerce_payment_order_balance($order);
       if (module_exists('commerce_cardonfile') && module_exists('commerce_shipment_outofstock')
-          && commerce_payment_order_balance($order) > 0) {
+          && $balance['amount'] > 0) {
         $charge_options[COMMERCE_SHIPMENT_NEW_CHARGE] = t('Create a new charge using the order owner\'s default card on file');
       }
 
@@ -165,15 +172,23 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
         $entity_form['#entity']->transaction_id = $charge['commerce_shipment_txn_list'];
         break;
       case COMMERCE_SHIPMENT_NEW_CHARGE:
+        $shipment = $entity_form['#entity'];
         // Attempt to charge the order owner's default card on file.
-        commerce_shipment_outofstock_capture_shipment($entity_form['#entity']);
+        commerce_shipment_outofstock_capture_shipment($shipment);
         // If a transaction was created it will be the most recent one for this
         // order that is not associated with any other shipments.
         $results = commerce_shipment_find_txn_id($form_state['commerce_order']->order_id);
 
         if (!empty($results)) {
           // Set the payment transaction id for the shipment.
-          $entity_form['#entity']->transaction_id = reset($results)->transaction_id;
+          $shipment->transaction_id = reset($results)->transaction_id;
+          // Make sure the shipment gets saved.
+          entity_save('commerce_shipment', $shipment);
+          // Add the shipment to the order.
+          $order = commerce_order_load($form_state['commerce_order']->order_id);
+          $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+          $order_wrapper->commerce_shipments[] = $shipment;
+          $order_wrapper->save();
         }
         break;
     }
