@@ -389,3 +389,20 @@ function commerce_shipment_find_txn_id($order_id) {
 
   return $query->execute()->fetchAllAssoc('transaction_id');
 }
+
+/**
+ * Formats the Payment transaction ID property on shipments for IEF.
+ *
+ * @param $value
+ *  The value of the property using this formatter. We expect a fully loaded
+ *  payment transaction entity object.
+ */
+function commerce_shipment_txn_id_formatter($value) {
+  if (!empty($value->transaction_id) && !empty($value->order_id)) {
+    $output = l('Captured', 'admin/commerce/orders/' . $value->order_id . '/payment/'  . $value->transaction_id . '/view');
+  }
+  else {
+    $output = 'None';
+  }
+  return $output;
+}

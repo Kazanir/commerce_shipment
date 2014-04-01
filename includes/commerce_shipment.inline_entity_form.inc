@@ -39,8 +39,8 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
     );
     $fields['transaction_id'] = array(
       'type' => 'property',
-      'label' => t('Payment'),
-      //'formatter' => 'commerce_price_formatted_amount',
+      'label' => t('Transaction'),
+      'formatter' => 'commerce_shipment_txn_id_formatter',
       'weight' => -96,
     );
     return $fields;
