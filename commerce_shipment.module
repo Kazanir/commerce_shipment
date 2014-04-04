@@ -406,3 +406,20 @@ function commerce_shipment_txn_id_formatter($value) {
   }
   return $output;
 }
+
+/**
+ * Implements hook_commerce_multichannel_migration_info().
+ */
+function commerce_shipment_commerce_multichannel_migration_info() {
+  $items = array(
+    'commerce_shipment' => array(
+      'machine_name' => 'CMMigration_commerce_shipment',
+      'class_name' => 'CommerceMultichannelMigration_commerce_shipment',
+      'group_name' => 'commerce_multichannel_orders',
+      'entity_base_table' => 'commerce_shipment',
+      'two_way' => TRUE,
+    ),
+  );
+
+  return $items;
+}

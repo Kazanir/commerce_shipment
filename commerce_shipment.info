@@ -24,5 +24,8 @@ files[] = includes/views/handlers/commerce_shipment_handler_filter_shipment_type
 ; Entity Reference Plugins
 files[] = plugins/entityreference/selection/CommerceShipmentSelectionHandler.class.php
 
+; Commerce Multichannel Integration Migration Class
+files[] = includes/commerce_multichannel.commerce_shipment.inc
+
 ; CSS
 stylesheets[all][] = theme/commerce_shipment.css
