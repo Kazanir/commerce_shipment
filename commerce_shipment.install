@@ -61,6 +61,20 @@ function commerce_shipment_schema() {
     'indexes' => array(
       'shipment_type' => array('type'),
     ),
+    'foreign keys' => array(
+      'order' => array(
+        'table' => 'commerce_order',
+        'columns'=> array('order_id' => 'order_id'),
+      ),
+      'payment_transaction' => array(
+        'table' => 'commerce_payment_transaction',
+        'columns'=> array('transaction_id' => 'transaction_id'),
+      ),
+      'customer_profile' => array(
+        'table' => 'commerce_customer_profile',
+        'columns'=> array('profile_id' => 'profile_id'),
+      ),
+    ),
   );
   if (module_exists('uuid')) {
     $schema['commerce_shipment']['fields']['uuid'] = uuid_schema_field_definition();
