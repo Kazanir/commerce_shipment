@@ -10,7 +10,7 @@
 function commerce_shipment_outofstock_default_rules_configuration() {
   $configs = array();
 
-  // An rule used to set the shipment transaction id on checkout complete.
+  // A rule used to set the shipment transaction id on checkout complete.
   $configs['rules_set_shipment_transaction_id'] = rules_import(
     '{ "rules_set_shipment_transaction_id" : {
       "LABEL" : "Set shipment transaction id",
