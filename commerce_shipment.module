@@ -445,3 +445,69 @@ function commerce_shipment_commerce_multichannel_migration_info() {
 
   return $items;
 }
+
+/**
+ * Returns a list of all carriers that Commerce Shipment knows how to match
+ * tracking numbers to.
+ *
+ * @return string[]
+ *   An associative array of known carriers for tracking number matching.
+ */
+function commerce_shipment_known_tracking_carriers() {
+  return array(
+    'ups' => t('UPS'),
+  );
+}
+
+/**
+ * Returns the carrier matching a given tracking number.
+ *
+ * @param string $tracking_number
+ *   The tracking number to evaluate.
+ *
+ * @return string
+ *   The relevant key matching one of the known carriers.
+ *
+ * @see commerce_shipment_known_tracking_carriers()
+ */
+function commerce_shipment_get_tracking_number_carrier($tracking_number) {
+  // First strip out all whitespace from the tracking number.
+  $tracking_number = preg_replace('/\s+/', '', $tracking_number);
+
+  // Check for each known carrier in turn.
+  foreach (commerce_shipment_known_tracking_carriers() as $key => $value) {
+    switch ($key) {
+      case 'ups':
+        if (substr($tracking_number, 0, 2) == '1Z') {
+          return 'ups';
+        }
+        break;
+    }
+  }
+
+  return 'unknown';
+}
+
+/**
+ * Returns the URL to track a shipment at its carrier website.
+ *
+ * @param string $carrier
+ *   The key for a known carrier.
+ * @param string $tracking_number
+ *   The tracking number to generate a link for.
+ *
+ * @return string
+ *   The URL to track the shipment.
+ *
+ * @see commerce_shipment_known_tracking_carriers()
+ */
+function commerce_shipment_tracking_url($carrier, $tracking_number) {
+  $tracking_number = rawurlencode($tracking_number);
+
+  switch ($carrier) {
+    case 'ups':
+      return 'http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=' . $tracking_number;
+  }
+
+  return '';
+}
