@@ -56,6 +56,13 @@ function commerce_shipment_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of additional data.',
+      ),
     ),
     'primary key' => array('shipment_id'),
     'indexes' => array(
@@ -81,4 +88,20 @@ function commerce_shipment_schema() {
   }
 
   return $schema;
+}
+
+/**
+ * Add a blob data field for storing additional data.
+ */
+function commerce_shipment_update_7000() {
+  $data = array(
+    'type' => 'blob',
+    'not null' => FALSE,
+    'size' => 'big',
+    'serialize' => TRUE,
+    'description' => "A serialized array of additional data.",
+  );
+  db_add_field('commerce_shipment', 'data', $data);
+
+  return t('Shipment schema updated to include a data property.');
 }
