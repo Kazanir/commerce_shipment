@@ -4,3 +4,5 @@ package = Commerce (contrib)
 core = 7.x
 
 dependencies[] = commerce_shipment
+
+files[] = includes/views/handlers/commerce_shipment_fields_handler_field_tracking_numbers.inc
