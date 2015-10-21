@@ -59,18 +59,27 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
 
     $entity_form = parent::entityForm($entity_form, $form_state);
 
-    if (!isset($shipment->transaction_id)) {
+    // If a merchant is selling out of stock items i.e. pre-orders, than they
+    // will need a way to associate shipments with payment transactions in
+    // order to identify which shipments have been paid for, and those which
+    // haven't.
+    if (module_exists('commerce_shipment_outofstock') && !isset($shipment->transaction_id)) {
       // Check to see if there are any charge methods available for this shipment.
       $charge_options = array();
       // First look for any available payment transactions.
       $conditions = array(
         'order_id' => $shipment->order_id,
       );
+
       $transactions = commerce_payment_transaction_load_multiple(array(), $conditions);
+
       // Add a fieldset to group commerce_shipment_txn_list if it exists.
       $entity_form['commerce_shipment_charge'] = array(
         '#type' => 'fieldset'
       );
+
+      // If there are some transactions than let us associate the shipment with
+      // an existing one.
       if (!empty($transactions)) {
         $charge_options[COMMERCE_SHIPMENT_ASSOC_CHARGE] = t('Associate with an existing charge');
         // Build our select list of possible payment transactions. Currently
@@ -96,11 +105,10 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
         );
       }
 
-      // Now check for card on file option.
+      // or allow us to create a new charge if the infrastructure exists.
       $order = commerce_order_load($shipment->order_id);
       $balance = commerce_payment_order_balance($order);
-      if (module_exists('commerce_cardonfile') && module_exists('commerce_shipment_outofstock')
-          && $balance['amount'] > 0) {
+      if (module_exists('commerce_cardonfile') && $balance['amount'] > 0) {
         $charge_options[COMMERCE_SHIPMENT_NEW_CHARGE] = t('Create a new charge using the order owner\'s default card on file');
       }
 
@@ -114,13 +122,13 @@ class CommerceShipmentInlineEntityFormController extends EntityInlineEntityFormC
           '#default_value' => COMMERCE_SHIPMENT_NO_CHARGE,
         );
       }
-      else {
-        $entity_form['commerce_shipment_charge'] = array(
-          '#type' => 'item',
-          '#title' => t('Shipment charge method'),
-          '#markup' => t('No shipment charge options available! You need to install commerce_cardonfile and/or add a payment transaction to the order.'),
-        );
-      }
+    }
+    else {
+      $entity_form['commerce_shipment_charge'] = array(
+        '#type' => 'item',
+        '#title' => t('Shipment charge method'),
+        '#markup' => t('To associate this shipment with existing payment transactions install the commerce_shipment_outofstock submodule. To create new transactions for this shipment install the commerce_cardonfile module.'),
+      );
     }
 
     // Adjust the weights of the form elements we're adding so that line item
