@@ -1,0 +1,7 @@
+name = Commerce Shipment Auto
+description = Provides a framework for generating shipment entities at checkout time.
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = commerce_shipment
+

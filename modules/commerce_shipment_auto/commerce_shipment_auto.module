@@ -1,0 +1,54 @@
+<?php
+
+function commerce_shipment_auto_commerce_checkout_pane_info() {
+  $checkout_panes['commerce_shipment_auto'] = array(
+    'title' => t('Commerce Shipment Automation'),
+    'file' => 'includes/commerce_shipment_auto.checkout_pane.inc',
+    'base' => 'commerce_customer_profile_pane',
+    'page' => 'checkout',
+    'locked' => TRUE,
+    'weight' => 20,
+    'callbacks' => array(
+      'settings_form' => 'commerce_shipment_auto_pane_settings_form',
+      'checkout_form' => 'commerce_shipment_auto_pane_checkout_form',
+      'checkout_form_validate' => 'commerce_shipment_auto_pane_checkout_form_validate',
+      'checkout_form_submit' => 'commerce_shipment_auto_pane_checkout_form_submit',
+      'review' => 'commerce_shipment_auto_profile_pane_review',
+    ),
+  );
+
+  return $checkout_panes;
+}
+
+function commerce_shipment_auto_ctools_plugin_type() {
+  $plugins['shipment_auto'] = array(
+    'process' => 'commerce_shipment_auto_plugin_process',
+  );
+
+  return $plugins;
+}
+
+function commerce_shipment_auto_plugin_process(&$plugin, $info) {
+  $settings = variable_get('commerce_shipment_auto_settings', commerce_shipment_auto_default_plugin_settings(array($plugin['name'] => $plugin)));
+  $plugin['original_description'] = $plugin['description'];
+
+  if (!empty($settings[$plugin['name']]['desc'])) {
+    $plugin['description'] = $settings[$plugin['name']]['desc'];
+  }
+}
+
+function commerce_shipment_auto_ctools_plugin_directory($module, $type) {
+  if ($module == 'commerce_shipment_auto' && $type = 'shipment_auto') {
+    return 'includes/shipment_auto';
+  }
+}
+
+function commerce_shipment_auto_default_plugin_settings($plugins) {
+  $defaults = array();
+
+  foreach ($plugins as $name => $p) {
+    $defaults[$p['module'] . '_' . $name] = array('enabled' => FALSE, 'desc' => '');
+  }
+
+  return $defaults;
+}
